@@ -45,10 +45,15 @@
 
   /* sections */
   section{margin-top:54px;scroll-margin-top:20px}
-  .shead{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--ink);padding-bottom:9px;margin-bottom:22px}
+  .shead{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--ink);padding-bottom:9px;margin-bottom:22px;cursor:pointer;user-select:none}
+  .shead:hover .stoggle{opacity:1}
   .snum{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-3)}
   .shead h2{font-size:20px;font-weight:800;letter-spacing:-.02em}
   .shead .note{margin-left:auto;font-size:12px;color:var(--ink-3);font-family:'JetBrains Mono',monospace}
+  .stoggle{width:16px;height:16px;flex-shrink:0;opacity:.4;transition:opacity .15s,transform .2s;margin-left:8px}
+  .sclosed .stoggle{transform:rotate(-90deg)}
+  .sclosed .sbody{display:none}
+  .sclosed{margin-bottom:0}
   p.lead{color:var(--ink-2);margin-bottom:18px;font-size:14.5px}
 
   /* weather */
@@ -1073,6 +1078,50 @@
       '<span class="sf-amt">'+f.a.toFixed(2)+'€</span>'+
     '</li>';
   }).join('');
+})();
+</script>
+
+<script>
+(function(){
+  var CHEVRON='<svg class="stoggle" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="3,5 8,11 13,5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var STORE_KEY='section-closed';
+
+  function loadClosed(){
+    try{return JSON.parse(localStorage.getItem(STORE_KEY)||'[]');}catch(e){return[];}
+  }
+  function saveClosed(ids){
+    try{localStorage.setItem(STORE_KEY,JSON.stringify(ids));}catch(e){}
+  }
+
+  document.querySelectorAll('section[id]').forEach(function(sec){
+    var shead=sec.querySelector('.shead');
+    if(!shead) return;
+
+    // wrap remaining children in sbody
+    var body=document.createElement('div');
+    body.className='sbody';
+    Array.from(sec.children).forEach(function(ch){
+      if(ch!==shead) body.appendChild(ch);
+    });
+    sec.appendChild(body);
+
+    // add chevron
+    shead.insertAdjacentHTML('beforeend', CHEVRON);
+
+    shead.addEventListener('click', function(){
+      var closed=loadClosed();
+      var idx=closed.indexOf(sec.id);
+      if(idx===-1){closed.push(sec.id);sec.classList.add('sclosed');}
+      else{closed.splice(idx,1);sec.classList.remove('sclosed');}
+      saveClosed(closed);
+    });
+  });
+
+  // restore closed state
+  loadClosed().forEach(function(id){
+    var sec=document.getElementById(id);
+    if(sec) sec.classList.add('sclosed');
+  });
 })();
 </script>
 </body>
