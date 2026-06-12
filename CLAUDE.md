@@ -10,4 +10,4 @@ Steps:
 3. `git push -u origin <branch>`
 4. Merge feature branch into `main` and push: `git checkout main && git merge <branch> && git push origin main && git checkout <branch>`
 
-Always do this automatically unless told otherwise.
+Always do this automatically — `main` is the canonical branch. Every change must end up on `main` and pushed.
