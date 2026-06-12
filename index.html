@@ -280,6 +280,16 @@
   .pd-total-panel .pd-axis-head{background:#1a1a1a;border-bottom:1px solid #444}
   .pd-total-panel .pd-axis-lbl{color:#666}
 
+  /* settlement flow */
+  .sf-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 28px;border:1px solid var(--line);border-radius:8px;overflow:hidden;padding:2px 16px;margin-top:18px}
+  @media(max-width:600px){.sf-list{grid-template-columns:1fr}}
+  .sf-item{display:flex;align-items:baseline;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
+  .sf-item:first-child,.sf-item:nth-child(2){border-top:none}
+  .sf-from{font-weight:600;min-width:74px;font-size:13px}
+  .sf-arr{color:var(--ink-3);font-family:'JetBrains Mono',monospace;font-size:12px;flex:none}
+  .sf-to{font-weight:800;flex:1}
+  .sf-amt{font-family:'JetBrains Mono',monospace;font-weight:700;margin-left:auto;color:var(--ink-2)}
+
   footer{margin-top:64px;padding-top:18px;border-top:2px solid var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 
   a{color:var(--ink);text-underline-offset:2px}
@@ -309,30 +319,130 @@
 
   <!-- WEATHER -->
   <section id="orai">
-    <div class="shead"><span class="snum">01</span><h2>Orai</h2><span class="note">prognozė · 06.12</span></div>
-    <p class="lead">Savaitgalis sausas su nedidele lietaus tikimybe šeštadienį. Vakarai vėsoki — kubilui ir pirčiai idealu, bet pasiimkit šiltesnį sluoksnį.</p>
-    <div class="wx">
-      <div class="c">
-        <div class="when">Pn vakaras · Vilnius · dažasvydis</div>
-        <div class="temp">~15°<small> / 11° naktį</small></div>
-        <div class="cond">Sausa, be lietaus</div>
-        <div class="det">Giedra–debesuota, silpnas ŠV vėjas (~3 m/s). 19:00 apie 14–15°. Dažasvydžiui puiku — žemė sausa.</div>
-      </div>
-      <div class="c">
-        <div class="when">Št · Rokiškis · RC + footgolf</div>
-        <div class="temp">~21°<small> / 13° naktį</small></div>
-        <div class="cond">Šilta, prog. trumpi lietūs</div>
-        <div class="det">Debesuota su pragiedruliais, popiet ~40–50% liūčių tikimybė. Lauko veikloms tinka, bet turėkit lietpaltį.</div>
-      </div>
-      <div class="c">
-        <div class="when">Sk · Rokiškis · išvažiavimas</div>
-        <div class="temp">~21°<small> / 14° naktį</small></div>
-        <div class="cond">Mažai debesuota</div>
-        <div class="det">Ramus, šiltas rytas, vietomis trumpas lietus. Bananui / kubilui ankstų rytą — ok.</div>
-      </div>
-    </div>
-    <div class="wx-foot">⚠ Prognozės skiriasi (14°–26° intervalas šaltiniuose) — patikslinkit penktadienį prieš išvažiuojant.</div>
+    <div class="shead"><span class="snum">01</span><h2>Orai</h2><span class="note">prognozė · 06.12–14</span></div>
+    <div id="wx-chart" style="margin:0 0 8px"></div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);margin-top:4px">⚠ Prognozė gali keistis — patikslinkit penktadienį prieš išvažiuojant.</div>
   </section>
+
+<script>
+(function(){
+  var PTS = [
+    {lbl:'Pn\n17:30', sub:'startas',    temp:16, rain:0,  key:true},
+    {lbl:'Pn\n19:00', sub:'dažasvydis', temp:15, rain:0,  key:true},
+    {lbl:'Pn\n23:00', sub:'Brazylija',  temp:12, rain:0,  key:false},
+    {lbl:'Št\n07:00', sub:'rytas',      temp:13, rain:15, key:false},
+    {lbl:'Št\n12:00', sub:'RC',         temp:20, rain:30, key:false},
+    {lbl:'Št\n15:00', sub:'RC+golf',    temp:21, rain:45, key:true},
+    {lbl:'Št\n22:00', sub:'vakaras',    temp:15, rain:20, key:false},
+    {lbl:'Sk\n07:00', sub:'rytas',      temp:14, rain:20, key:false},
+    {lbl:'Sk\n13:00', sub:'namo',       temp:20, rain:30, key:true},
+  ];
+
+  var DAYS = [
+    {label:'PENKTADIENIS', from:0, to:2},
+    {label:'ŠEŠTADIENIS',  from:3, to:6},
+    {label:'SEKMADIENIS',  from:7, to:8},
+  ];
+
+  var W=760, H=230;
+  var ml=48, mr=48, mt=28, mb=64;
+  var cw=W-ml-mr, ch=H-mt-mb;
+  var n=PTS.length;
+  var tMin=8, tMax=26;
+  var step=cw/(n-1);
+
+  function cx(i){return ml+i*step;}
+  function ty(t){return mt+ch-(t-tMin)/(tMax-tMin)*ch;}
+  function ry(r){return mt+ch-r/100*ch;}
+
+  // build SVG
+  var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:'+W+'px;display:block;font-family:JetBrains Mono,monospace">';
+
+  // day background bands
+  var bandColors=['#fafafa','#f5f5f5','#fafafa'];
+  DAYS.forEach(function(d,di){
+    var x1=cx(d.from)-(di===0?ml:step/2);
+    var x2=di<DAYS.length-1?cx(d.to)+step/2:cx(d.to)+mr;
+    s+='<rect x="'+x1+'" y="'+mt+'" width="'+(x2-x1)+'" height="'+ch+'" fill="'+bandColors[di]+'"/>';
+  });
+
+  // day separator lines
+  [[2,3],[6,7]].forEach(function(pair){
+    var x=(cx(pair[0])+cx(pair[1]))/2;
+    s+='<line x1="'+x+'" y1="'+mt+'" x2="'+x+'" y2="'+(mt+ch)+'" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>';
+  });
+
+  // day labels
+  DAYS.forEach(function(d){
+    var x1=cx(d.from), x2=cx(d.to), xc=(x1+x2)/2;
+    s+='<text x="'+xc+'" y="'+(mt-10)+'" text-anchor="middle" font-size="9" letter-spacing="0.08em" fill="#999" font-weight="700">'+d.label+'</text>';
+  });
+
+  // rain bars
+  var barW=step*0.45;
+  PTS.forEach(function(p,i){
+    if(p.rain===0)return;
+    var x=cx(i)-barW/2;
+    var bh=p.rain/100*ch;
+    var by=mt+ch-bh;
+    s+='<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+bh.toFixed(1)+'" fill="#c8d8e8" rx="2"/>';
+    s+='<text x="'+cx(i)+'" y="'+(by-4).toFixed(1)+'" text-anchor="middle" font-size="9.5" fill="#6688aa" font-weight="600">'+p.rain+'%</text>';
+  });
+
+  // temp gridlines + left axis labels
+  [10,14,18,22].forEach(function(t){
+    var y=ty(t);
+    s+='<line x1="'+ml+'" y1="'+y.toFixed(1)+'" x2="'+(W-mr)+'" y2="'+y.toFixed(1)+'" stroke="#e8e8e8" stroke-width="1"/>';
+    s+='<text x="'+(ml-5)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" font-size="9.5" fill="#aaa">'+t+'°</text>';
+  });
+
+  // temp area fill
+  var pts=PTS.map(function(p,i){return cx(i).toFixed(1)+','+ty(p.temp).toFixed(1);});
+  var area='M'+cx(0).toFixed(1)+','+(mt+ch)+' L'+pts.join(' L')+' L'+cx(n-1).toFixed(1)+','+(mt+ch)+' Z';
+  s+='<path d="'+area+'" fill="rgba(0,0,0,0.04)"/>';
+
+  // temp line
+  s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="#111" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+
+  // temp dots + values
+  PTS.forEach(function(p,i){
+    var x=cx(i), y=ty(p.temp);
+    s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(p.key?4:3)+'" fill="'+(p.key?'#111':'#fff')+'" stroke="#111" stroke-width="2"/>';
+    s+='<text x="'+x.toFixed(1)+'" y="'+(y-8).toFixed(1)+'" text-anchor="middle" font-size="10.5" fill="#111" font-weight="700">'+p.temp+'°</text>';
+  });
+
+  // x axis baseline
+  s+='<line x1="'+ml+'" y1="'+(mt+ch)+'" x2="'+(W-mr)+'" y2="'+(mt+ch)+'" stroke="#111" stroke-width="1.5"/>';
+
+  // x labels
+  PTS.forEach(function(p,i){
+    var x=cx(i);
+    var lines=p.lbl.split('\n');
+    var y0=mt+ch+14;
+    lines.forEach(function(l,li){
+      s+='<text x="'+x.toFixed(1)+'" y="'+(y0+li*13)+'" text-anchor="middle" font-size="9.5" fill="'+(p.key?'#111':'#888')+'" font-weight="'+(p.key?'700':'400')+'">'+l+'</text>';
+    });
+    s+='<text x="'+x.toFixed(1)+'" y="'+(y0+27)+'" text-anchor="middle" font-size="9" fill="'+(p.key?'#444':'#aaa')+'">'+p.sub+'</text>';
+  });
+
+  // axes labels
+  s+='<text x="'+(ml-32)+'" y="'+(mt+ch/2)+'" text-anchor="middle" font-size="9" fill="#aaa" transform="rotate(-90,'+(ml-32)+','+(mt+ch/2)+')">°C</text>';
+  s+='<text x="'+(W-mr+18)+'" y="'+(mt+ch/2)+'" text-anchor="middle" font-size="9" fill="#6688aa" transform="rotate(90,'+(W-mr+18)+','+(mt+ch/2)+')">lietus %</text>';
+
+  // rain legend
+  s+='<rect x="'+(W-mr-70)+'" y="'+(mt+3)+'" width="10" height="10" fill="#c8d8e8" rx="2"/>';
+  s+='<text x="'+(W-mr-56)+'" y="'+(mt+11)+'" font-size="9" fill="#6688aa">lietus %</text>';
+  s+='<line x1="'+(W-mr-70)+'" y1="'+(mt+22)+'" x2="'+(W-mr-60)+'" y2="'+(mt+22)+'" stroke="#111" stroke-width="2"/>';
+  s+='<text x="'+(W-mr-56)+'" y="'+(mt+26)+'" font-size="9" fill="#111">temp °C</text>';
+
+  s+='</svg>';
+
+  var el=document.getElementById('wx-chart');
+  if(el)el.innerHTML=s;
+})();
+</script>
+
+
 
   <!-- TIMELINE -->
   <section id="programa">
@@ -689,11 +799,12 @@
     <div class="callout"><b><a class="inl" href="https://www.splitwise.com/join/AYyo7LP3xMP+nw9d6?v=e" target="_blank" rel="noopener">Splitwise</a>:</b> grupė sukurta (Rokas). Visi įmeta išlaidas ten, kad nereikėtų ieškoti per chatą. Niko alkoholį dengia Lukas → į Splitwise. <b>Trūksta narių Splitwise'e</b> — ypač Mykolas (perka visą maistą!), Michael, Adomas Juška.</div>
   </section>
 
-  <!-- PAYMENT DIAGRAMS -->
+  <!-- SETTLEMENT FLOW -->
   <section id="apmokejimas">
-    <div class="shead"><span class="snum">10</span><h2>Kas kiek sumokėjo</h2><span class="note">4 pozicijos · 8 žmonės</span></div>
-    <p class="lead">Kiekvienas stulpelis — vienas žmogus. Pilka ◄ = dar reikia sumokėti tam, kas avansu sumokėjo. Juoda ► = gauna atgal iš kitų. ★ = sumokėjo avansu.</p>
-    <div id="pd-section"></div>
+    <div class="shead"><span class="snum">10</span><h2>Atsiskaitymas</h2><span class="note">greedy min. sandoriai</span></div>
+    <p class="lead">Kairėje — kas moka. Dešinėje — kas gauna atgal (ir už ką jie mokėjo). Linijų storis proporcingas sumai. <b>7 sandoriai</b> — matematiškai mažiausias įmanomas kiekis (tas pats Splitwise algoritmas).</p>
+    <div id="settle-flow"></div>
+    <ul class="sf-list" id="settle-list"></ul>
   </section>
 
   <footer>
@@ -865,114 +976,102 @@
 </script>
 <script>
 (function(){
-  var PEOPLE = ['Adomas G.','Dalius','Lukas','Marius','Michael','Mykolas','Rokas','Šarūnas'];
-  var N = PEOPLE.length; // 8
-
-  // items: {name, total, paidBy (index into PEOPLE), note}
-  var ITEMS = [
-    {name:'Dažasvydis',          total:350, payer:'Šarūnas', note:'500 kamuoliukų · 19:00 Pn · Šarūnas sumokėjo'},
-    {name:'Nakvynė (2 naktys)',  total:600, payer:'Rokas',   note:'Brazylija vasarnamis · Rokas atsiskaitė grynais'},
-    {name:'RC mašinėlės + Footgolf', total:180, payer:'Marius', note:'Šeštadienis · Marius suderino ir sumokėjo'},
-    {name:'Maistas + gėrimai',   total:500, payer:'Mykolas', note:'Visos sodybos atsargos · perka Mykolas'},
+  var W=780, H=490;
+  // Debtors (left column) — sorted to minimise line crossings
+  var D=[
+    {name:'Michael',   amt:203.75, y:62},
+    {name:'Lukas',     amt:203.75, y:162},
+    {name:'Dalius',    amt:203.75, y:258},
+    {name:'Adomas G.', amt:203.75, y:355},
+    {name:'Marius',    amt:23.75,  y:445, note:'RC 180€ sumokėta, bet share > paid'},
+  ];
+  // Creditors (right column)
+  var C=[
+    {name:'Rokas',   credit:396.25, y:112, note:'Brazylija · avansu 600€'},
+    {name:'Mykolas', credit:296.25, y:258, note:'Maistas + gėrimai · avansu 500€'},
+    {name:'Šarūnas', credit:146.25, y:415, note:'Dažasvydis · avansu 350€'},
+  ];
+  // Greedy minimum settlement flows (verified)
+  // y1=exit y on debtor, y2=arrival y on creditor (slight offsets for multi-connection nodes)
+  var F=[
+    {di:0,ci:0,a:203.75,y1:62,  y2:102},   // Michael → Rokas
+    {di:1,ci:0,a:192.50,y1:152, y2:122},   // Lukas → Rokas
+    {di:1,ci:1,a:11.25, y1:172, y2:246},   // Lukas → Mykolas
+    {di:2,ci:1,a:203.75,y1:258, y2:258},   // Dalius → Mykolas
+    {di:3,ci:1,a:81.25, y1:345, y2:270},   // Adomas G. → Mykolas
+    {di:3,ci:2,a:122.50,y1:365, y2:405},   // Adomas G. → Šarūnas
+    {di:4,ci:2,a:23.75, y1:445, y2:425},   // Marius → Šarūnas
   ];
 
-  var TOTAL_ALL = ITEMS.reduce(function(s,i){return s+i.total;},0);
-  var SHARE_ALL = TOTAL_ALL / N;
+  var NWD=130, NHD=42, LX=65;
+  var NWC=152, NHC=58, RX=715;
+  var FX=NWD, TX=W-NWC-5+2;  // flow end x (just before creditor left edge)
+  var CP1=285, CP2=495;
+  var MINA=11.25, MAXA=203.75;
 
-  function makeSection(){
-    var sec = document.getElementById('pd-section');
-    if(!sec) return;
+  function thk(a){return (1.5+(a-MINA)/(MAXA-MINA)*5.5).toFixed(1);}
+  function opa(a){return (0.45+(a/MAXA)*0.55).toFixed(2);}
 
-    // per-item panels
-    var itemsHTML = ITEMS.map(function(item){
-      var share = item.total / N;
-      var payerIdx = PEOPLE.indexOf(item.payer);
+  var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:'+W+'px;display:block" font-family="Inter,sans-serif">';
 
-      // net values: payer gets back (total - share), others owe share
-      var nets = PEOPLE.map(function(p,i){
-        return i === payerIdx ? item.total - share : -share;
-      });
+  // col headers
+  s+='<text x="'+LX+'" y="22" text-anchor="middle" font-size="9" letter-spacing="0.14em" fill="#aaa" font-weight="700" font-family="JetBrains Mono,monospace">MOKA</text>';
+  s+='<text x="'+RX+'" y="22" text-anchor="middle" font-size="9" letter-spacing="0.14em" fill="#aaa" font-weight="700" font-family="JetBrains Mono,monospace">GAUNA ATGAL</text>';
+  s+='<text x="385" y="22" text-anchor="middle" font-size="9" letter-spacing="0.1em" fill="#ccc" font-weight="400" font-family="JetBrains Mono,monospace">SUMA</text>';
 
-      var maxVal = Math.max.apply(null, nets.map(Math.abs));
+  // FLOW LINES (drawn first, under nodes)
+  F.forEach(function(f){
+    var y1=f.y1, y2=f.y2;
+    var path='M '+FX+','+y1+' C '+CP1+','+y1+' '+CP2+','+y2+' '+TX+','+y2;
+    var t=thk(f.a), op=opa(f.a);
+    s+='<path d="'+path+'" fill="none" stroke="#222" stroke-width="'+t+'" stroke-opacity="'+op+'"/>';
+    // arrowhead at end
+    var ax=TX+3, ay=y2;
+    s+='<polygon points="'+(ax+7)+','+ay+' '+ax+','+(ay-4)+' '+ax+','+(ay+4)+'" fill="#333" fill-opacity="'+op+'"/>';
+    // amount label centred on bezier midpoint
+    var lx=385, ly=(y1+y2)/2;
+    var lbl=Math.round(f.a)+'€';
+    var lw=lbl.length*6.2+14;
+    s+='<rect x="'+(lx-lw/2)+'" y="'+(ly-8.5)+'" width="'+lw.toFixed(0)+'" height="17" rx="3" fill="white" stroke="#d5d5d5" stroke-width="0.8"/>';
+    s+='<text x="'+lx+'" y="'+(ly+4.5)+'" text-anchor="middle" font-size="10" fill="#333" font-family="JetBrains Mono,monospace" font-weight="600">'+lbl+'</text>';
+  });
 
-      var axisHTML =
-        '<div class="pd-axis-head">' +
-          '<div class="pd-axis-lbl al">Žmogus</div>' +
-          '<div class="pd-axis-lbl">◄ moka &nbsp; 0 &nbsp; gauna ►</div>' +
-          '<div class="pd-axis-lbl ar">Balansas</div>' +
-        '</div>';
+  // DEBTOR NODES (drawn over lines)
+  D.forEach(function(d){
+    var nx=LX-NWD/2, ny=d.y-NHD/2;
+    s+='<rect x="'+nx+'" y="'+ny+'" width="'+NWD+'" height="'+NHD+'" rx="7" fill="#f6f6f6" stroke="#bbb" stroke-width="1.5"/>';
+    s+='<text x="'+LX+'" y="'+(d.y-4)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="#111">'+d.name+'</text>';
+    s+='<text x="'+LX+'" y="'+(d.y+11)+'" text-anchor="middle" font-size="10" fill="#999" font-family="JetBrains Mono,monospace">moka '+d.amt.toFixed(2)+'€</text>';
+  });
 
-      var rowsHTML = PEOPLE.map(function(p,i){
-        var net = nets[i];
-        var isPayer = i === payerIdx;
-        var w = Math.abs(net)/maxVal*50;
-        var barHTML = net >= 0
-          ? '<div class="pd-bar pos" style="width:'+w.toFixed(1)+'%"></div>'
-          : '<div class="pd-bar neg" style="width:'+w.toFixed(1)+'%"></div>';
-        var amtCls = net >= 0 ? 'pos' : 'neg';
-        var amtTxt = (net >= 0 ? '+' : '') + Math.round(net) + '€';
-        return '<div class="pd-row'+(isPayer?' pd-payer':'')+'">'+
-          '<div class="pd-name">'+p+(isPayer?' ★':'')+'</div>'+
-          '<div class="pd-bars"><div class="pd-zero"></div>'+barHTML+'</div>'+
-          '<div class="pd-amt '+amtCls+'">'+amtTxt+'</div>'+
-          '</div>';
-      }).join('');
+  // CREDITOR NODES (drawn over lines)
+  C.forEach(function(c){
+    var nx=RX-NWC/2, ny=c.y-NHC/2;
+    s+='<rect x="'+nx+'" y="'+ny+'" width="'+NWC+'" height="'+NHC+'" rx="7" fill="#111"/>';
+    s+='<text x="'+RX+'" y="'+(c.y-11)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">'+c.name+'</text>';
+    s+='<text x="'+RX+'" y="'+(c.y+4)+'" text-anchor="middle" font-size="10.5" fill="#ccc" font-family="JetBrains Mono,monospace">+'+c.credit.toFixed(2)+'€</text>';
+    s+='<text x="'+RX+'" y="'+(c.y+19)+'" text-anchor="middle" font-size="9.5" fill="#666">'+c.note+'</text>';
+  });
 
-      return '<div class="pd-panel">'+
-        '<div class="pd-head"><div class="pn">'+item.name+'</div>'+
-        '<div class="pm">'+item.total+'€ · per asm: '+Math.round(share*100)/100+'€ · '+item.note+'</div></div>'+
-        axisHTML+rowsHTML+'</div>';
-    }).join('');
+  // caption
+  s+='<text x="'+(W/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="#ccc" font-family="JetBrains Mono,monospace">7 sandoriai · iš viso 1630€ · lygi dalis 203.75€/asm. · Marius sumokėjo RC 180€, dar lieka 23.75€</text>';
 
-    // overall net panel
-    var overallNets = PEOPLE.map(function(p){
-      var paid = ITEMS.reduce(function(s,item){
-        return s + (item.payer === p ? item.total : 0);
-      }, 0);
-      return paid - SHARE_ALL;
-    });
-    var maxO = Math.max.apply(null, overallNets.map(Math.abs));
+  s+='</svg>';
 
-    var oRows = PEOPLE.map(function(p,i){
-      var net = overallNets[i];
-      var isPaid = net > 0;
-      var w = Math.abs(net)/maxO*50;
-      var barHTML = net >= 0
-        ? '<div class="pd-bar pos" style="width:'+w.toFixed(1)+'%"></div>'
-        : '<div class="pd-bar neg" style="width:'+w.toFixed(1)+'%"></div>';
-      var amtCls = net >= 0 ? 'pos' : 'neg';
-      var netR = Math.round(Math.abs(net)*100)/100;
-      var amtTxt = net >= 0 ? '+'+netR+'€' : '−'+netR+'€';
-      var hint = net >= 0 ? ' ← gauna' : ' → moka';
-      return '<div class="pd-row'+(isPaid?' pd-payer':'')+'">'+
-        '<div class="pd-name" style="font-size:13px">'+p+'</div>'+
-        '<div class="pd-bars"><div class="pd-zero"></div>'+barHTML+'</div>'+
-        '<div class="pd-amt '+amtCls+'" title="'+hint+'">'+amtTxt+'</div>'+
-        '</div>';
-    }).join('');
+  var svgEl=document.getElementById('settle-flow');
+  if(svgEl) svgEl.innerHTML=s;
 
-    var totalHTML =
-      '<div class="pd-total-panel">'+
-        '<div class="pd-head"><div class="pn">BENDRA SUVESTINĖ · VISI MOKĖJIMAI</div>'+
-        '<div class="pm">Iš viso: '+TOTAL_ALL+'€ · Lygi dalis: '+Math.round(SHARE_ALL*100)/100+'€/asm.</div></div>'+
-        '<div class="pd-axis-head">'+
-          '<div class="pd-axis-lbl al" style="color:#888">Žmogus</div>'+
-          '<div class="pd-axis-lbl" style="color:#888">◄ moka dar &nbsp; 0 &nbsp; gauna atgal ►</div>'+
-          '<div class="pd-axis-lbl ar" style="color:#888">Neto</div>'+
-        '</div>'+
-        oRows+
-      '</div>';
-
-    sec.innerHTML =
-      '<div class="pd-items">'+itemsHTML+'</div>'+
-      totalHTML;
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', makeSection);
-  } else {
-    makeSection();
-  }
+  // Render transaction list
+  var listEl=document.getElementById('settle-list');
+  if(!listEl) return;
+  listEl.innerHTML=F.map(function(f){
+    return '<li class="sf-item">'+
+      '<span class="sf-from">'+D[f.di].name+'</span>'+
+      '<span class="sf-arr">→</span>'+
+      '<span class="sf-to">'+C[f.ci].name+'</span>'+
+      '<span class="sf-amt">'+f.a.toFixed(2)+'€</span>'+
+    '</li>';
+  }).join('');
 })();
 </script>
 </body>
