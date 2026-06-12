@@ -1,821 +1,882 @@
-<!DOCTYPE html>
-<html lang="lt">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="lt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Niko bernvakaris · planas</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#111;
-    --ink-2:#555;
-    --ink-3:#8a8a8a;
-    --line:#e6e6e6;
-    --line-2:#d0d0d0;
-    --bg:#fff;
-    --fill:#f4f4f4;
-    --fill-2:#ececec;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-  body{
-    background:var(--bg);color:var(--ink);
-    font-family:'Inter',sans-serif;line-height:1.5;font-size:15px;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:860px;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(18px,5vw,44px) 96px}
-  mono,.mono{font-family:'JetBrains Mono',monospace}
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Niko bernvakaris &middot; planas</title>
+<style type="text/css">
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  color: #333333;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+#wrapper {
+  width: 760px;
+  margin: 20px auto;
+  background: #ffffff;
+  border: 1px solid #cccccc;
+  padding: 20px 30px 40px 30px;
+}
+h1 {
+  font-size: 28px;
+  color: #111111;
+  margin: 0 0 4px 0;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+h2 {
+  font-size: 16px;
+  color: #111111;
+  border-bottom: 2px solid #333333;
+  padding-bottom: 4px;
+  margin: 30px 0 10px 0;
+}
+h3 {
+  font-size: 13px;
+  margin: 12px 0 4px 0;
+}
+.kicker {
+  font-size: 11px;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.meta {
+  font-size: 12px;
+  color: #555555;
+  margin: 4px 0 16px 0;
+}
+.meta b { color: #333333; }
 
-  /* masthead */
-  .mast{border-bottom:2px solid var(--ink);padding-bottom:22px;margin-bottom:8px}
-  .kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3)}
-  h1{font-size:clamp(34px,8vw,62px);font-weight:800;letter-spacing:-.03em;line-height:.98;margin:10px 0 16px}
-  .mast-meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-2)}
-  .mast-meta b{color:var(--ink);font-weight:500}
+/* glance table */
+table.glance {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+}
+table.glance td {
+  border: 1px solid #cccccc;
+  padding: 8px 12px;
+  font-size: 12px;
+  background: #f9f9f9;
+  width: 20%;
+}
+table.glance td .lbl {
+  font-size: 10px;
+  color: #888888;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 3px;
+}
+table.glance td .val {
+  font-weight: bold;
+  color: #111111;
+}
 
-  /* glance */
-  .glance{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:26px 0 10px}
-  .glance>div{padding:13px 14px;border-right:1px solid var(--line)}
-  .glance>div:last-child{border-right:none}
-  .glance .l{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
-  .glance .v{font-weight:700;font-size:14px;margin-top:4px;letter-spacing:-.01em}
-  @media(max-width:680px){.glance{grid-template-columns:repeat(2,1fr)}.glance>div{border-bottom:1px solid var(--line)}.glance>div:nth-child(odd){border-right:1px solid var(--line)}.glance>div:nth-child(even){border-right:none}}
+/* weather */
+table.wx {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+table.wx td {
+  border: 1px solid #cccccc;
+  padding: 10px;
+  vertical-align: top;
+  width: 33%;
+}
+table.wx .day-label {
+  font-size: 10px;
+  color: #888888;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+table.wx .temp {
+  font-size: 22px;
+  font-weight: bold;
+  color: #111111;
+}
+table.wx .cond {
+  font-weight: bold;
+  font-size: 12px;
+  margin: 3px 0;
+}
+table.wx .det {
+  font-size: 11px;
+  color: #666666;
+  line-height: 1.5;
+}
+.wx-note { font-size: 11px; color: #888888; margin-top: 6px; }
 
-  /* sections */
-  section{margin-top:54px;scroll-margin-top:20px}
-  .shead{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--ink);padding-bottom:9px;margin-bottom:22px}
-  .snum{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-3)}
-  .shead h2{font-size:20px;font-weight:800;letter-spacing:-.02em}
-  .shead .note{margin-left:auto;font-size:12px;color:var(--ink-3);font-family:'JetBrains Mono',monospace}
-  p.lead{color:var(--ink-2);margin-bottom:18px;font-size:14.5px}
+/* timeline */
+.day-heading {
+  background: #eeeeee;
+  border-left: 4px solid #333333;
+  padding: 5px 10px;
+  margin: 16px 0 8px 0;
+  font-weight: bold;
+  font-size: 13px;
+}
+table.tl {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 6px;
+}
+table.tl tr {
+  border-bottom: 1px dotted #cccccc;
+}
+table.tl td {
+  padding: 7px 8px;
+  vertical-align: top;
+  font-size: 12px;
+}
+table.tl td.time {
+  width: 70px;
+  font-weight: bold;
+  color: #111111;
+  white-space: nowrap;
+}
+table.tl td.act {
+  font-weight: bold;
+  width: 180px;
+}
+table.tl td.desc {
+  color: #555555;
+  line-height: 1.5;
+}
+table.tl tr.key {
+  background: #f5f5f5;
+}
 
-  /* weather */
-  .wx{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  @media(max-width:680px){.wx{grid-template-columns:1fr}}
-  .wx .c{border:1px solid var(--line);border-radius:8px;padding:16px}
-  .wx .when{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
-  .wx .temp{font-size:30px;font-weight:800;letter-spacing:-.03em;margin:8px 0 2px}
-  .wx .temp small{font-size:15px;font-weight:500;color:var(--ink-3)}
-  .wx .cond{font-weight:600;font-size:13.5px}
-  .wx .det{font-size:12.5px;color:var(--ink-2);margin-top:7px;line-height:1.45}
-  .wx-foot{font-size:12px;color:var(--ink-3);margin-top:12px;font-family:'JetBrains Mono',monospace}
+/* cars */
+table.cars {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+table.cars td {
+  border: 1px solid #cccccc;
+  padding: 10px;
+  vertical-align: top;
+  width: 25%;
+  font-size: 12px;
+}
+table.cars td h4 {
+  font-size: 12px;
+  margin: 0 0 6px 0;
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 4px;
+}
+table.cars td ul {
+  margin: 0;
+  padding: 0 0 0 16px;
+  line-height: 1.8;
+}
+.tag { font-size: 10px; color: #888888; }
 
-  /* timeline */
-  .day{margin-bottom:26px}
-  .dtitle{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
-  .dtitle .d{font-weight:800;font-size:16px;letter-spacing:-.01em}
-  .dtitle .dd{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-3)}
-  .tl{border-left:2px solid var(--ink);margin-left:6px}
-  .ev{position:relative;padding:0 0 16px 22px}
-  .ev::before{content:"";position:absolute;left:-6px;top:5px;width:10px;height:10px;background:var(--bg);border:2px solid var(--ink);border-radius:50%}
-  .ev.key::before{background:var(--ink)}
-  .ev .t{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px}
-  .ev .a{font-weight:600;margin-top:1px}
-  .ev .m{font-size:13px;color:var(--ink-2);margin-top:3px;line-height:1.45}
-  .ev .m b{color:var(--ink);font-weight:600}
-  .leg{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);display:inline-block;border:1px solid var(--line-2);border-radius:4px;padding:1px 6px;margin-top:5px}
+/* pickups */
+table.pickups {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+table.pickups td {
+  border: 1px solid #cccccc;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+table.pickups td.k {
+  background: #f0f0f0;
+  font-weight: bold;
+  width: 100px;
+}
 
-  /* cars */
-  .cars{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:680px){.cars{grid-template-columns:1fr}}
-  .car{border:1px solid var(--line);border-radius:8px;padding:15px}
-  .car h4{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px}
-  .car .drv{font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--ink);color:#fff;padding:2px 6px;border-radius:4px;letter-spacing:.04em}
-  .car ul{list-style:none;margin:10px 0 0;font-size:13.5px}
-  .car li{padding:4px 0;border-top:1px dotted var(--line);display:flex;justify-content:space-between;gap:8px}
-  .car li:first-child{border-top:none}
-  .car li .tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3)}
-  .car li.niko{font-weight:700}
-  .pickups{margin-top:14px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .pickups .row{display:grid;grid-template-columns:130px 1fr;border-top:1px solid var(--line);font-size:13.5px}
-  .pickups .row:first-child{border-top:none}
-  .pickups .row .k{padding:9px 12px;background:var(--fill);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500}
-  .pickups .row .val{padding:9px 12px}
-  @media(max-width:680px){.pickups .row{grid-template-columns:104px 1fr}}
+/* distances */
+table.dist {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0;
+}
+table.dist tr { border-bottom: 1px solid #eeeeee; }
+table.dist td {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+table.dist td.km, table.dist td.mins {
+  text-align: right;
+  color: #666666;
+  width: 80px;
+}
 
-  /* generic table */
-  .dist{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:6px}
-  .dist .row{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:9px 13px;border-top:1px solid var(--line);font-size:13.5px;align-items:center}
-  .dist .row:first-child{border-top:none}
-  .dist .row .seg{font-weight:500}
-  .dist .row .km,.dist .row .min{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-2);text-align:right}
+/* food / meals */
+table.meals {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+table.meals tr { border-bottom: 1px solid #dddddd; }
+table.meals tr.night { background: #f8f8f8; }
+table.meals td {
+  padding: 8px 10px;
+  font-size: 12px;
+  vertical-align: top;
+}
+table.meals td.when {
+  font-weight: bold;
+  width: 110px;
+  color: #111111;
+}
+table.meals td.cost {
+  text-align: right;
+  font-weight: bold;
+  width: 90px;
+  white-space: nowrap;
+}
+.lbl2 { color: #888888; font-size: 10px; text-transform: uppercase; margin-right: 4px; }
 
-  /* food */
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:680px){.grid2{grid-template-columns:1fr}}
-  .box{border:1px solid var(--line);border-radius:8px;padding:15px}
-  .box h4{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);margin-bottom:9px}
-  .box ul{list-style:none;font-size:13.5px}
-  .box li{padding:3px 0;display:flex;gap:8px}
-  .box li::before{content:"–";color:var(--ink-3)}
-  .box li b{font-weight:600}
+/* boxes */
+table.boxes {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+table.boxes td {
+  border: 1px solid #cccccc;
+  padding: 10px;
+  vertical-align: top;
+  width: 50%;
+  font-size: 12px;
+}
+table.boxes td h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #666666;
+  margin: 0 0 6px 0;
+}
+table.boxes td ul {
+  margin: 0;
+  padding: 0 0 0 16px;
+  line-height: 1.8;
+}
 
-  /* calculator */
-  .ctrl{display:flex;align-items:center;border:1px solid var(--line-2);border-radius:7px;overflow:hidden}
-  .ctrl button{width:36px;height:36px;border:none;background:var(--fill);font-size:17px;font-weight:700;cursor:pointer;flex:none;color:var(--ink);transition:background .12s}
-  .ctrl button:hover{background:var(--fill-2)}
-  .ctrl button:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
-  .ctrl input{flex:1;min-width:44px;border:none;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;height:36px;background:var(--bg);color:var(--ink)}
-  .ctrl input:focus{outline:none}
+/* alcohol calculator */
+table.ac-grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.ac-grid td {
+  vertical-align: top;
+  padding: 0 8px 0 0;
+  width: 50%;
+}
+.ac-panel {
+  border: 1px solid #333333;
+  margin-bottom: 10px;
+}
+.ac-phead {
+  background: #333333;
+  color: #ffffff;
+  padding: 8px 10px;
+  font-weight: bold;
+  font-size: 12px;
+}
+.ac-phead .psub { font-size: 10px; color: #aaaaaa; font-weight: normal; }
+.ac-target {
+  padding: 8px 10px;
+  border-bottom: 1px solid #cccccc;
+  font-size: 12px;
+  background: #fafafa;
+}
+.ac-target label { font-weight: bold; }
+.ac-items { padding: 0; }
+.ac-item {
+  display: block;
+  overflow: hidden;
+  padding: 5px 10px;
+  border-top: 1px solid #eeeeee;
+  font-size: 12px;
+}
+.ac-item .iname { float: left; width: 45%; }
+.ac-item .iqty { float: left; width: 20%; }
+.ac-item .iqty input { width: 52px; border: 1px solid #cccccc; padding: 2px 4px; font-size: 12px; text-align: center; }
+.ac-item .ipure { float: left; width: 20%; color: #888888; font-size: 11px; padding-top: 2px; }
+.ac-item .idel { float: right; border: none; background: none; cursor: pointer; color: #aaaaaa; font-size: 14px; }
+.ac-item.ac-head { background: #f0f0f0; font-weight: bold; font-size: 10px; text-transform: uppercase; color: #888888; }
+.ac-add {
+  padding: 6px 10px;
+  border-top: 1px solid #cccccc;
+  font-size: 12px;
+}
+.ac-add select { font-size: 12px; border: 1px solid #cccccc; padding: 2px 4px; width: 68%; }
+.ac-add .addbtn { font-size: 12px; border: 1px solid #555555; background: #ffffff; padding: 3px 8px; cursor: pointer; }
+.ac-diag { padding: 8px 10px 4px; border-top: 1px solid #cccccc; }
+.ac-diag .dlbl { font-size: 10px; color: #888888; text-transform: uppercase; margin-bottom: 4px; }
+.ac-track {
+  position: relative;
+  height: 18px;
+  background: #e8e8e8;
+  border: 1px solid #cccccc;
+}
+.ac-okzone {
+  position: absolute;
+  top: 0; height: 100%;
+  background: #d4edda;
+  border-left: 1px dashed #6aaa6a;
+  border-right: 1px dashed #6aaa6a;
+}
+.ac-seg { position: absolute; top: 0; height: 100%; }
+.ac-tgt { position: absolute; top: -4px; width: 2px; background: #111111; height: calc(100% + 8px); }
+.ac-axis { position: relative; height: 14px; margin-top: 2px; font-size: 10px; color: #888888; font-family: monospace; }
+.ac-axis span { position: absolute; white-space: nowrap; }
+.ac-sum { padding: 8px 10px; border-top: 1px solid #cccccc; background: #f9f9f9; font-size: 12px; }
+.ac-sum .sv { font-size: 20px; font-weight: bold; color: #111111; font-family: monospace; }
+.ac-sum .sl { font-size: 10px; color: #888888; text-transform: uppercase; margin-top: 2px; }
+.ac-sum .st { margin-top: 6px; }
+.badge { display: inline-block; padding: 1px 7px; font-size: 11px; font-weight: bold; border: 1px solid; }
+.bok { background: #d4edda; color: #155724; border-color: #a8d5b5; }
+.blow { background: #fff3cd; color: #856404; border-color: #ffc107; }
+.bhigh { background: #fde2e2; color: #7b1c1c; border-color: #f5a5a5; }
+.ac-people { margin-bottom: 14px; font-size: 13px; }
+.ac-people label { font-weight: bold; }
+.ac-people input { border: 1px solid #cccccc; padding: 3px 6px; font-size: 13px; width: 50px; text-align: center; }
 
-  .ac-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;padding:14px;border:1px solid var(--line);border-radius:8px}
-  .ac-people{display:flex;align-items:center;gap:12px}
-  .ac-people .lbl{font-size:13px;font-weight:600}
-  .ac-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-left:auto}
-  .acleg{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-2)}
-  .acleg .sw{width:18px;height:10px;border-radius:2px;flex:none}
+/* checklist */
+ul.checks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+ul.checks li {
+  padding: 7px 0 7px 22px;
+  border-bottom: 1px solid #eeeeee;
+  font-size: 13px;
+  background: url("data:image/gif;base64,R0lGODlhCgAKAIABAAAAAP///yH5BAEAAAEALAAAAAAKAAoAAAIRjI+py+0Po5y02ouz3pz7BQA7") no-repeat 2px 10px;
+  line-height: 1.5;
+}
+ul.checks li .sub { display: block; font-size: 11px; color: #888888; margin-top: 2px; }
 
-  .ac-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:720px){.ac-grid{grid-template-columns:1fr}}
+/* activities */
+table.acts {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.acts td {
+  vertical-align: top;
+  padding: 0 10px 0 0;
+  width: 50%;
+}
+table.acts td h4 {
+  font-size: 11px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #333333;
+  padding-bottom: 4px;
+  margin: 0 0 6px 0;
+}
+table.acts ul { list-style: none; margin: 0; padding: 0; }
+table.acts li {
+  padding: 5px 0;
+  border-bottom: 1px dotted #cccccc;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.rej li { color: #aaaaaa; }
+.rej .name { text-decoration: line-through; }
+.mk { font-weight: bold; margin-right: 4px; }
 
-  .ac-panel{border:2px solid var(--ink);border-radius:10px;overflow:hidden}
-  .ac-phead{padding:12px 14px;border-bottom:1px solid var(--ink);background:var(--ink);color:#fff}
-  .ac-phead .pname{font-weight:800;font-size:15px;letter-spacing:.03em}
-  .ac-phead .psub{font-family:'JetBrains Mono',monospace;font-size:11px;color:#aaa;margin-top:2px}
+/* budget */
+table.budget {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+table.budget tr { border-bottom: 1px solid #dddddd; }
+table.budget tr.tot {
+  background: #eeeeee;
+  border-top: 2px solid #333333;
+  font-weight: bold;
+}
+table.budget td {
+  padding: 8px 10px;
+  font-size: 12px;
+  vertical-align: top;
+}
+table.budget td.amt {
+  text-align: right;
+  font-weight: bold;
+  width: 80px;
+  white-space: nowrap;
+  font-family: monospace;
+}
+table.budget td.pp {
+  text-align: right;
+  color: #888888;
+  width: 90px;
+  white-space: nowrap;
+  font-family: monospace;
+  font-size: 11px;
+}
+table.budget td .sub { font-size: 10px; color: #888888; display: block; }
 
-  .ac-target{padding:11px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .ac-target label{font-size:12px;font-weight:700;flex:none;letter-spacing:.02em}
-  .ac-target input[type=range]{flex:1;min-width:80px;accent-color:var(--ink);cursor:pointer}
-  .ac-target .tval{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;white-space:nowrap;min-width:120px}
-  .ac-target .tval small{font-weight:400;color:var(--ink-3)}
+/* settlement */
+table.settle {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+table.settle tr { border-bottom: 1px solid #dddddd; }
+table.settle td {
+  padding: 7px 10px;
+  font-size: 12px;
+}
+table.settle td.from { font-weight: bold; width: 110px; }
+table.settle td.to { font-weight: bold; width: 100px; }
+table.settle td.amt { font-weight: bold; text-align: right; font-family: monospace; color: #555555; }
+table.settle th {
+  text-align: left;
+  background: #eeeeee;
+  padding: 5px 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #666666;
+  border-bottom: 1px solid #cccccc;
+}
 
-  .ac-items{padding:0}
-  .ac-item{display:grid;grid-template-columns:1fr 72px 60px 26px;gap:5px;align-items:center;padding:7px 12px;border-top:1px solid var(--line);font-size:13px}
-  .ac-item:first-child{border-top:none}
-  .ac-item.ac-head{background:var(--fill);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
-  .ac-item .iqty input{width:100%;border:1px solid var(--line-2);border-radius:5px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;padding:4px 0;color:var(--ink)}
-  .ac-item .iqty input:focus{outline:1px solid var(--ink)}
-  .ac-item .ipure{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--ink-3);text-align:right}
-  .ac-item .idel{background:none;border:none;cursor:pointer;font-size:15px;color:var(--ink-3);padding:0;line-height:1;text-align:center}
-  .ac-item .idel:hover{color:var(--ink)}
+.callout {
+  background: #f5f5f5;
+  border-left: 4px solid #555555;
+  padding: 10px 14px;
+  font-size: 12px;
+  margin: 10px 0;
+  line-height: 1.6;
+}
 
-  .ac-add{padding:9px 12px;border-top:1px solid var(--line);display:flex;gap:8px;align-items:center}
-  .ac-add select{flex:1;border:1px solid var(--line-2);border-radius:5px;font-size:12.5px;padding:5px 7px;font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg)}
-  .ac-add select:focus{outline:1px solid var(--ink)}
-  .ac-add .addbtn{border:1.5px solid var(--ink);background:var(--bg);border-radius:5px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink);white-space:nowrap}
-  .ac-add .addbtn:hover{background:var(--ink);color:#fff}
+.ev-links { margin: 6px 0 2px 0; font-size: 11px; }
+.ev-links a { color: #0000cc; margin-right: 14px; }
 
-  .ac-diag{padding:12px 14px 0;border-top:1px solid var(--line)}
-  .ac-diag .dlbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:8px}
-  .ac-track{position:relative;height:26px;background:#efefef;border-radius:4px}
-  .ac-okzone{position:absolute;top:0;height:100%;background:#e4f0e4;border-left:1.5px dashed #9a9;border-right:1.5px dashed #9a9;pointer-events:none}
-  .ac-seg{position:absolute;top:0;height:100%;transition:width .25s ease,left .25s ease}
-  .ac-tgt{position:absolute;top:-5px;width:2px;background:var(--ink);height:calc(100% + 10px);pointer-events:none}
-  .ac-axis{position:relative;height:16px;margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3)}
-  .ac-axis span{position:absolute;white-space:nowrap;transform:translateX(-50%)}
-  .ac-axis span.aa-first{transform:none}
-  .ac-axis span.aa-last{transform:translateX(-100%)}
+.snum { color: #888888; font-size: 11px; margin-right: 6px; font-family: monospace; }
 
-  .ac-sum{padding:12px 14px;border-top:1px solid var(--line);background:var(--fill)}
-  .ac-sum .sv{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;letter-spacing:-.02em}
-  .ac-sum .sl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
-  .ac-sum .st{font-size:12px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
-  .ac-sum .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px;font-family:'JetBrains Mono',monospace;margin-left:4px}
-  .ac-sum .bok{background:#d4edda;color:#155724}
-  .ac-sum .blow{background:#fff3cd;color:#856404}
-  .ac-sum .bhigh{background:#fde2e2;color:#7b1c1c}
+hr { border: none; border-top: 1px solid #cccccc; margin: 20px 0; }
 
-  /* dress / lists */
-  .checks{list-style:none}
-  .checks li{padding:8px 0 8px 26px;position:relative;border-top:1px solid var(--line);font-size:14px}
-  .checks li:first-child{border-top:none}
-  .checks li::before{content:"";position:absolute;left:2px;top:13px;width:8px;height:8px;border:1.5px solid var(--ink);border-radius:2px}
-  .checks li b{font-weight:700}
-  .checks li .sub{display:block;color:var(--ink-2);font-size:12.5px;margin-top:2px}
+a { color: #0000cc; }
+a:visited { color: #551a8b; }
 
-  /* activities selected/rejected */
-  .acts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:680px){.acts{grid-template-columns:1fr}}
-  .acts .col h4{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--ink)}
-  .acts ul{list-style:none}
-  .acts li{padding:7px 0;border-top:1px solid var(--line);font-size:13.5px;display:flex;gap:9px;align-items:flex-start}
-  .acts li:first-child{border-top:none}
-  .acts .mk{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;flex:none;margin-top:1px;width:14px}
-  .sel .mk{color:var(--ink)}
-  .rej li{color:var(--ink-3)}
-  .rej .name{text-decoration:line-through}
-  .acts li .why{color:var(--ink-3);font-size:11.5px;font-style:italic}
-
-  /* budget */
-  .budget{border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .budget .row{display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:10px 14px;border-top:1px solid var(--line);font-size:13.5px;align-items:baseline}
-  .budget .row:first-child{border-top:none}
-  .budget .row.tot{background:var(--fill);font-weight:800;border-top:2px solid var(--ink)}
-  .budget .item{font-weight:500}
-  .budget .sub{color:var(--ink-3);font-size:11.5px}
-  .budget .amt{font-family:'JetBrains Mono',monospace;font-weight:700;text-align:right;white-space:nowrap}
-  .budget .pp{font-family:'JetBrains Mono',monospace;color:var(--ink-2);font-size:12px;text-align:right;white-space:nowrap}
-
-  .callout{background:var(--fill);border-left:3px solid var(--ink);border-radius:0 8px 8px 0;padding:13px 15px;font-size:13.5px;margin-top:14px}
-  .callout b{font-weight:700}
-
-  /* media + links */
-  .ev-media{margin-top:13px;max-width:560px}
-  .thumb{display:block;width:100%;height:210px;object-fit:cover;border:1px solid var(--line-2);border-radius:8px;filter:grayscale(1) contrast(1.05);transition:filter .4s ease;background:var(--fill)}
-  .thumb:hover{filter:grayscale(0)}
-  .ev-media .links{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px}
-  .lnk{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink-3);width:fit-content}
-  .lnk:hover{border-bottom-color:var(--ink)}
-  .lnk::after{content:" ↗";color:var(--ink-3);font-size:10px}
-  a.inl{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
-  a.inl:hover{border-bottom-color:var(--ink)}
-  .acts a.inl::after{content:" ↗";color:var(--ink-3);font-size:9px}
-
-  /* per-event menu + cost */
-  .ev-cost{margin-top:11px;border:1px solid var(--line-2);border-radius:7px;overflow:hidden;max-width:380px}
-  .ec-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;background:var(--fill);padding:8px 11px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
-  .ec-head span{font-family:'JetBrains Mono',monospace;font-weight:400;font-size:10px;letter-spacing:0;text-transform:none;color:var(--ink-3)}
-  .ec-row{display:flex;justify-content:space-between;gap:10px;padding:7px 11px;border-top:1px solid var(--line);font-size:13px}
-  .ec-row .ec-amt{font-family:'JetBrains Mono',monospace;font-weight:700;white-space:nowrap}
-  .ec-row.tot{background:var(--ink);color:#fff;font-weight:800;border-top:none}
-  .ec-note{font-size:11.5px;color:var(--ink-3);margin-top:6px;line-height:1.45;max-width:380px}
-
-  /* meals per occasion */
-  .meals{border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .meal{display:grid;grid-template-columns:120px 1fr auto;gap:14px;padding:12px 14px;border-top:1px solid var(--line);align-items:baseline}
-  .meal:first-child{border-top:none}
-  .meal.night{background:var(--fill)}
-  .meal-when{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700}
-  .meal-when span{display:block;font-weight:400;color:var(--ink-3);font-size:10.5px;margin-top:2px}
-  .meal-body .mb{padding:2px 0;font-size:13.5px;line-height:1.4}
-  .meal-body .mb b{font-weight:700}
-  .meal-body .lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);display:inline-block;min-width:62px}
-  .meal-cost{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13.5px;white-space:nowrap;text-align:right}
-  .meal-cost small{display:block;font-weight:400;color:var(--ink-3);font-size:10px}
-  @media(max-width:680px){.meal{grid-template-columns:1fr;gap:6px}.meal-cost{text-align:left}.meal-body .lbl{min-width:0;margin-right:6px}}
-
-  /* payment diagrams */
-  .pd-items{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-  @media(max-width:700px){.pd-items{grid-template-columns:1fr}}
-  .pd-panel{border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .pd-head{padding:11px 14px;background:var(--fill);border-bottom:1px solid var(--line)}
-  .pd-head .pn{font-weight:800;font-size:14px;letter-spacing:-.01em}
-  .pd-head .pm{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);margin-top:3px;line-height:1.4}
-  .pd-axis-head{display:grid;grid-template-columns:82px 1fr 56px;gap:4px;padding:5px 12px;border-bottom:1px solid var(--line);background:var(--fill)}
-  .pd-axis-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);text-align:center}
-  .pd-axis-lbl.al{text-align:left}.pd-axis-lbl.ar{text-align:right}
-  .pd-row{display:grid;grid-template-columns:82px 1fr 56px;gap:4px;padding:6px 12px;border-top:1px solid var(--line);align-items:center}
-  .pd-row:first-of-type{border-top:none}
-  .pd-row.pd-payer .pd-name{font-weight:700}
-  .pd-name{font-size:12.5px}
-  .pd-bars{position:relative;height:20px}
-  .pd-zero{position:absolute;left:50%;top:-2px;width:2px;height:24px;background:var(--ink);pointer-events:none}
-  .pd-bar{position:absolute;top:50%;transform:translateY(-50%);height:14px}
-  .pd-bar.pos{background:var(--ink);left:50%;border-radius:0 3px 3px 0}
-  .pd-bar.neg{background:#d0d0d0;right:50%;border-radius:3px 0 0 3px}
-  .pd-amt{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;text-align:right;white-space:nowrap}
-  .pd-amt.pos{color:#155724}.pd-amt.neg{color:#721c24}
-
-  .pd-total-panel{border:2px solid var(--ink);border-radius:8px;overflow:hidden}
-  .pd-total-panel .pd-head{background:var(--ink);color:#fff;border-bottom:2px solid #fff}
-  .pd-total-panel .pd-head .pm{color:#aaa}
-  .pd-total-panel .pd-row{padding:7px 14px}
-  .pd-total-panel .pd-bars .pd-zero{background:#fff}
-  .pd-total-panel .pd-bar.pos{background:#fff}
-  .pd-total-panel .pd-bar.neg{background:#555}
-  .pd-total-panel .pd-amt.pos{color:#90ee90}
-  .pd-total-panel .pd-amt.neg{color:#ffb3b3}
-  .pd-total-panel .pd-axis-head{background:#1a1a1a;border-bottom:1px solid #444}
-  .pd-total-panel .pd-axis-lbl{color:#666}
-
-  /* settlement flow */
-  .sf-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 28px;border:1px solid var(--line);border-radius:8px;overflow:hidden;padding:2px 16px;margin-top:18px}
-  @media(max-width:600px){.sf-list{grid-template-columns:1fr}}
-  .sf-item{display:flex;align-items:baseline;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
-  .sf-item:first-child,.sf-item:nth-child(2){border-top:none}
-  .sf-from{font-weight:600;min-width:74px;font-size:13px}
-  .sf-arr{color:var(--ink-3);font-family:'JetBrains Mono',monospace;font-size:12px;flex:none}
-  .sf-to{font-weight:800;flex:1}
-  .sf-amt{font-family:'JetBrains Mono',monospace;font-weight:700;margin-left:auto;color:var(--ink-2)}
-
-  footer{margin-top:64px;padding-top:18px;border-top:2px solid var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
-
-  a{color:var(--ink);text-underline-offset:2px}
+#footer {
+  margin-top: 40px;
+  border-top: 2px solid #333333;
+  padding-top: 10px;
+  font-size: 11px;
+  color: #888888;
+  font-family: monospace;
+}
 </style>
 </head>
 <body>
-<div style="position:fixed;top:6px;left:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#ccc;z-index:9999;pointer-events:none;letter-spacing:.05em">v.5</div>
-<div class="wrap">
+<div id="wrapper">
 
   <!-- MASTHEAD -->
-  <header class="mast">
-    <div class="kicker">Slaptas planas · siurprizas Nikodemui</div>
-    <h1>Niko bernvakaris</h1>
-    <div class="mast-meta">
-      <span><b>Birželio 12–14, 2026</b> · Pn–Sk</span>
-      <span>Sodyba <b>Brazylija</b> · prie Rokiškio</span>
-      <span><b>8</b> + Nikodemas</span>
-    </div>
-  </header>
+  <div class="kicker">Slaptas planas &middot; siurprizas Nikodemui</div>
+  <h1>Niko bernvakaris</h1>
+  <p class="meta"><b>Birezelio 12&ndash;14, 2026</b> &middot; Pn&ndash;Sk &middot; Sodyba <b>Brazylija</b> &middot; prie Rokiškio &middot; <b>8</b> + Nikodemas</p>
 
-  <div class="glance">
-    <div><div class="l">Data</div><div class="v">06.12–14</div></div>
-    <div><div class="l">Nakvynės</div><div class="v">2 naktys</div></div>
-    <div><div class="l">Nuo Vilniaus</div><div class="v">~2 val · 190 km</div></div>
-    <div><div class="l">Žmonių</div><div class="v">8 + jaunikis</div></div>
-    <div><div class="l">Biudžetas</div><div class="v">~250 €/asm.</div></div>
-  </div>
+  <table class="glance" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><span class="lbl">Data</span><span class="val">06.12&ndash;14</span></td>
+      <td><span class="lbl">Nakvyn&#279;s</span><span class="val">2 naktys</span></td>
+      <td><span class="lbl">Nuo Vilniaus</span><span class="val">~2 val &middot; 190 km</span></td>
+      <td><span class="lbl">&#381;moni&#371;</span><span class="val">8 + jaunikis</span></td>
+      <td><span class="lbl">Biudžetas</span><span class="val">~250 &euro;/asm.</span></td>
+    </tr>
+  </table>
 
   <!-- WEATHER -->
-  <section id="orai">
-    <div class="shead"><span class="snum">01</span><h2>Orai</h2><span class="note">prognozė · 06.12–14</span></div>
-    <div id="wx-chart" style="margin:0 0 8px"></div>
-    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);margin-top:4px">⚠ Prognozė gali keistis — patikslinkit penktadienį prieš išvažiuojant.</div>
-  </section>
+  <h2><span class="snum">01</span>Orai <small style="font-size:11px;color:#888;font-weight:normal;">prognozė &middot; 06.12&ndash;14</small></h2>
 
-<script>
-(function(){
-  var PTS = [
-    {lbl:'Pn\n17:30', sub:'startas',    temp:16, rain:0,  key:true},
-    {lbl:'Pn\n19:00', sub:'dažasvydis', temp:15, rain:0,  key:true},
-    {lbl:'Pn\n23:00', sub:'Brazylija',  temp:12, rain:0,  key:false},
-    {lbl:'Št\n07:00', sub:'rytas',      temp:13, rain:15, key:false},
-    {lbl:'Št\n12:00', sub:'RC',         temp:20, rain:30, key:false},
-    {lbl:'Št\n15:00', sub:'RC+golf',    temp:21, rain:45, key:true},
-    {lbl:'Št\n22:00', sub:'vakaras',    temp:15, rain:20, key:false},
-    {lbl:'Sk\n07:00', sub:'rytas',      temp:14, rain:20, key:false},
-    {lbl:'Sk\n13:00', sub:'namo',       temp:20, rain:30, key:true},
-  ];
-
-  var DAYS = [
-    {label:'PENKTADIENIS', from:0, to:2},
-    {label:'ŠEŠTADIENIS',  from:3, to:6},
-    {label:'SEKMADIENIS',  from:7, to:8},
-  ];
-
-  var W=760, H=230;
-  var ml=48, mr=48, mt=28, mb=64;
-  var cw=W-ml-mr, ch=H-mt-mb;
-  var n=PTS.length;
-  var tMin=8, tMax=26;
-  var step=cw/(n-1);
-
-  function cx(i){return ml+i*step;}
-  function ty(t){return mt+ch-(t-tMin)/(tMax-tMin)*ch;}
-  function ry(r){return mt+ch-r/100*ch;}
-
-  // build SVG
-  var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:'+W+'px;display:block;font-family:JetBrains Mono,monospace">';
-
-  // day background bands
-  var bandColors=['#fafafa','#f5f5f5','#fafafa'];
-  DAYS.forEach(function(d,di){
-    var x1=cx(d.from)-(di===0?ml:step/2);
-    var x2=di<DAYS.length-1?cx(d.to)+step/2:cx(d.to)+mr;
-    s+='<rect x="'+x1+'" y="'+mt+'" width="'+(x2-x1)+'" height="'+ch+'" fill="'+bandColors[di]+'"/>';
-  });
-
-  // day separator lines
-  [[2,3],[6,7]].forEach(function(pair){
-    var x=(cx(pair[0])+cx(pair[1]))/2;
-    s+='<line x1="'+x+'" y1="'+mt+'" x2="'+x+'" y2="'+(mt+ch)+'" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>';
-  });
-
-  // day labels
-  DAYS.forEach(function(d){
-    var x1=cx(d.from), x2=cx(d.to), xc=(x1+x2)/2;
-    s+='<text x="'+xc+'" y="'+(mt-10)+'" text-anchor="middle" font-size="9" letter-spacing="0.08em" fill="#999" font-weight="700">'+d.label+'</text>';
-  });
-
-  // rain bars
-  var barW=step*0.45;
-  PTS.forEach(function(p,i){
-    if(p.rain===0)return;
-    var x=cx(i)-barW/2;
-    var bh=p.rain/100*ch;
-    var by=mt+ch-bh;
-    s+='<rect x="'+x.toFixed(1)+'" y="'+by.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+bh.toFixed(1)+'" fill="#c8d8e8" rx="2"/>';
-    s+='<text x="'+cx(i)+'" y="'+(by-4).toFixed(1)+'" text-anchor="middle" font-size="9.5" fill="#6688aa" font-weight="600">'+p.rain+'%</text>';
-  });
-
-  // temp gridlines + left axis labels
-  [10,14,18,22].forEach(function(t){
-    var y=ty(t);
-    s+='<line x1="'+ml+'" y1="'+y.toFixed(1)+'" x2="'+(W-mr)+'" y2="'+y.toFixed(1)+'" stroke="#e8e8e8" stroke-width="1"/>';
-    s+='<text x="'+(ml-5)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" font-size="9.5" fill="#aaa">'+t+'°</text>';
-  });
-
-  // temp area fill
-  var pts=PTS.map(function(p,i){return cx(i).toFixed(1)+','+ty(p.temp).toFixed(1);});
-  var area='M'+cx(0).toFixed(1)+','+(mt+ch)+' L'+pts.join(' L')+' L'+cx(n-1).toFixed(1)+','+(mt+ch)+' Z';
-  s+='<path d="'+area+'" fill="rgba(0,0,0,0.04)"/>';
-
-  // temp line
-  s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="#111" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
-
-  // temp dots + values
-  PTS.forEach(function(p,i){
-    var x=cx(i), y=ty(p.temp);
-    s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(p.key?4:3)+'" fill="'+(p.key?'#111':'#fff')+'" stroke="#111" stroke-width="2"/>';
-    s+='<text x="'+x.toFixed(1)+'" y="'+(y-8).toFixed(1)+'" text-anchor="middle" font-size="10.5" fill="#111" font-weight="700">'+p.temp+'°</text>';
-  });
-
-  // x axis baseline
-  s+='<line x1="'+ml+'" y1="'+(mt+ch)+'" x2="'+(W-mr)+'" y2="'+(mt+ch)+'" stroke="#111" stroke-width="1.5"/>';
-
-  // x labels
-  PTS.forEach(function(p,i){
-    var x=cx(i);
-    var lines=p.lbl.split('\n');
-    var y0=mt+ch+14;
-    lines.forEach(function(l,li){
-      s+='<text x="'+x.toFixed(1)+'" y="'+(y0+li*13)+'" text-anchor="middle" font-size="9.5" fill="'+(p.key?'#111':'#888')+'" font-weight="'+(p.key?'700':'400')+'">'+l+'</text>';
-    });
-    s+='<text x="'+x.toFixed(1)+'" y="'+(y0+27)+'" text-anchor="middle" font-size="9" fill="'+(p.key?'#444':'#aaa')+'">'+p.sub+'</text>';
-  });
-
-  // axes labels
-  s+='<text x="'+(ml-32)+'" y="'+(mt+ch/2)+'" text-anchor="middle" font-size="9" fill="#aaa" transform="rotate(-90,'+(ml-32)+','+(mt+ch/2)+')">°C</text>';
-  s+='<text x="'+(W-mr+18)+'" y="'+(mt+ch/2)+'" text-anchor="middle" font-size="9" fill="#6688aa" transform="rotate(90,'+(W-mr+18)+','+(mt+ch/2)+')">lietus %</text>';
-
-  // rain legend
-  s+='<rect x="'+(W-mr-70)+'" y="'+(mt+3)+'" width="10" height="10" fill="#c8d8e8" rx="2"/>';
-  s+='<text x="'+(W-mr-56)+'" y="'+(mt+11)+'" font-size="9" fill="#6688aa">lietus %</text>';
-  s+='<line x1="'+(W-mr-70)+'" y1="'+(mt+22)+'" x2="'+(W-mr-60)+'" y2="'+(mt+22)+'" stroke="#111" stroke-width="2"/>';
-  s+='<text x="'+(W-mr-56)+'" y="'+(mt+26)+'" font-size="9" fill="#111">temp °C</text>';
-
-  s+='</svg>';
-
-  var el=document.getElementById('wx-chart');
-  if(el)el.innerHTML=s;
-})();
-</script>
-
-
+  <table class="wx" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <div class="day-label">Penktadienis 06.12</div>
+        <div class="temp">15&ndash;16&deg;C</div>
+        <div class="cond">Debesuota, sausas</div>
+        <div class="det">Lietus: 0%<br />Startas, dažasvydis, kelionė</div>
+      </td>
+      <td>
+        <div class="day-label">Šeštadienis 06.13</div>
+        <div class="temp">13&ndash;21&deg;C</div>
+        <div class="cond">Kintama, galimas lietus</div>
+        <div class="det">Lietus: 20&ndash;45%<br />RC mašinėlės, footgolf, party</div>
+      </td>
+      <td>
+        <div class="day-label">Sekmadienis 06.14</div>
+        <div class="temp">14&ndash;20&deg;C</div>
+        <div class="cond">Kintama, galimas lietus</div>
+        <div class="det">Lietus: 20&ndash;30%<br />Bananas, namo</div>
+      </td>
+    </tr>
+  </table>
+  <p class="wx-note">&#9888; Prognoz&#279; gali keis&#269;is &mdash; patikslinkit penktadien&#237; prie&#353; i&#353;va&#382;iuojant.</p>
 
   <!-- TIMELINE -->
-  <section id="programa">
-    <div class="shead"><span class="snum">02</span><h2>Tvarkaraštis</h2><span class="note">pirma veikla 19:00</span></div>
+  <h2><span class="snum">02</span>Tvarkaraštis <small style="font-size:11px;color:#888;font-weight:normal;">pirma veikla 19:00</small></h2>
 
-    <div class="day">
-      <div class="dtitle"><span class="d">Penktadienis</span><span class="dd">06.12 · kelionės diena</span></div>
-      <div class="tl">
-        <div class="ev key">
-          <div class="t">17:30</div>
-          <div class="a">Išvykimas iš Vilniaus</div>
-          <div class="m">Startas nuo <b>Konstitucijos pr.</b> Niką paima Roko ekipažas. Michael — prie Baltojo tilto. Luko ekipažas iš Santaros.</div>
+  <div class="day-heading">Penktadienis &mdash; 06.12 &middot; kelion&#279;s diena</div>
+  <table class="tl" cellspacing="0" cellpadding="0">
+    <tr class="key">
+      <td class="time">17:30</td>
+      <td class="act">Išvykimas iš Vilniaus</td>
+      <td class="desc">Startas nuo <b>Konstitucijos pr.</b> Nik&#261; paima Roko eki&#382;a&#382;as. Michael &mdash; prie Baltojo tilto. Luko eki&#382;a&#382;as i&#353; Santar&#371;s.</td>
+    </tr>
+    <tr>
+      <td class="time">~18:15</td>
+      <td class="act">Atvykimas į dažasvydį</td>
+      <td class="desc">Mileiki&#371; g. 1, Vilniaus r. Kelias ~35 min, su kam&#353;&#269;iais iki 1 val.</td>
+    </tr>
+    <tr class="key">
+      <td class="time">19:00</td>
+      <td class="act">Dažasvydis</td>
+      <td class="desc"><b>U&#382;rezervuota.</b> 500 kamuo li&#371;k&#371;, ~2 val. Kaina <b>350 &euro;</b> (&#352;ar&#363;nas sumok&#279;jo rezervacij&#261;). Drabužiai, kuri&#371; negaila!<br />
+        <div class="ev-links">
+          <a href="https://www.google.com/maps/place/Paintball,+Airsoft+center/@54.9466198,25.3452584,15z" target="_blank">Vieta &middot; Mileiki&#371; g. 1</a>
+          <a href="https://www.pamatyklietuvoje.lt/pramogos/pramoginis-dazasvydis/4550" target="_blank">Apie dažasvyd&#237;</a>
         </div>
-        <div class="ev">
-          <div class="t">~18:15</div>
-          <div class="a">Atvykimas į dažasvydžio aikštelę</div>
-          <div class="m">Mileikių g. 1, Vilniaus r. Kelias ~35 min, su kamščiais iki 1 val. <span class="leg">35 min nuo Vilniaus</span></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="time">~21:15</td>
+      <td class="act">Kelion&#279; &#301; Brazylij&#261;</td>
+      <td class="desc">~2 val. iki sodybos prie Rokiškio.</td>
+    </tr>
+    <tr class="key">
+      <td class="time">~23:00</td>
+      <td class="act">Brazylija &middot; &#301;sik&#363;rimas</td>
+      <td class="desc">V&#279;lyva vakarien&#279; (<b>šašlykai</b>), pirtis, kubilas, pirmas vakaras. Vienas namas, 5 kambariai.<br />
+        <div class="ev-links">
+          <a href="https://www.sodyba-brazylija.lt/" target="_blank">sodyba-brazylija.lt</a>
+          <a href="https://www.sodyba-brazylija.lt/namelis/vasarnamis-su-terasa/" target="_blank">Namelis</a>
         </div>
-        <div class="ev key">
-          <div class="t">19:00</div>
-          <div class="a">Dažasvydis 🔫</div>
-          <div class="m"><b>Užrezervuota.</b> 500 kamuoliukų, ~2 val. Kaina <b>350 €</b> (Šarūnas sumokėjo rezervaciją). Drabužiai, kurių negaila!</div>
-          <div class="ev-media">
-            <img class="thumb" loading="lazy" src="https://www.pamatyklietuvoje.lt/api/Photo/f0b38008-e33a-4aba-9bc1-cebf019fd80d/0/1024/576/crop" alt="Dažasvydis">
-            <div class="links">
-              <a class="lnk" href="https://www.google.com/maps/place/Paintball,+Airsoft+center/@54.9466198,25.3452584,15z" target="_blank" rel="noopener">Vieta · Mileikių g. 1</a>
-              <a class="lnk" href="https://www.pamatyklietuvoje.lt/pramogos/pramoginis-dazasvydis/4550" target="_blank" rel="noopener">Apie dažasvydį</a>
-            </div>
-          </div>
-        </div>
-        <div class="ev">
-          <div class="t">~21:15</div>
-          <div class="a">Kelionė į Brazyliją</div>
-          <div class="m">~2 val. iki sodybos prie Rokiškio. <span class="leg">~2 val · 190 km</span></div>
-        </div>
-        <div class="ev key">
-          <div class="t">~23:00</div>
-          <div class="a">Brazylija · įsikūrimas</div>
-          <div class="m">Vėlyva vakarienė (<b>šašlykai</b>), pirtis, kubilas, pirmas vakaras. Vienas namas, 5 kambariai, viešbutuko tipo.</div>
-          <div class="ev-media">
-            <img class="thumb" loading="lazy" src="https://www.sodyba-brazylija.lt/wp-content/uploads/2021/05/dsc_5188.jpg" alt="Sodyba Brazylija">
-            <div class="links">
-              <a class="lnk" href="https://www.sodyba-brazylija.lt/" target="_blank" rel="noopener">sodyba-brazylija.lt</a>
-              <a class="lnk" href="https://www.sodyba-brazylija.lt/namelis/vasarnamis-su-terasa/" target="_blank" rel="noopener">Namelis</a>
-            </div>
-          </div>
-          <div class="ev-cost">
-            <div class="ec-head">Vakaro meniu + gėrimai <span>~įvertinta · 1-a naktis</span></div>
-            <div class="ec-row"><span>🍖 Šašlykai (vakarienė)</span><span class="ec-amt">~80 €</span></div>
-            <div class="ec-row"><span>🍺 Alus · ~25 skard. (½ atsargų)</span><span class="ec-amt">~38 €</span></div>
-            <div class="ec-row"><span>🥃 Džinas + tekila (šotai)</span><span class="ec-amt">~35 €</span></div>
-            <div class="ec-row"><span>🥨 Užkandžiai + gaivieji</span><span class="ec-amt">~30 €</span></div>
-            <div class="ec-row tot"><span>Iš viso vakarui</span><span class="ec-amt">~183 € · ~20 €/asm.</span></div>
-          </div>
-          <div class="ec-note">Dalis Mykolo ~500 € (visas savaitgalio maistas + gėrimai). Perka Mykolas → į Splitwise. Niko alkoholis — atskirai per Luką. Tikslų alaus kiekį skaičiuok <a class="inl" href="#skaiciuokle">skaičiuoklėje ↓</a>.</div>
-        </div>
-      </div>
-    </div>
+        <br />
+        <b>Vakaro menu + g&#279;rimai (~1-a naktis):</b><br />
+        Šašlykai ~80&euro; &middot; Alus ~25 skard. ~38&euro; &middot; D&#382;inas + tekila ~35&euro; &middot; U&#382;kand&#382;iai ~30&euro;<br />
+        <b>Iš viso vakarui: ~183&euro; (~20&euro;/asm.)</b>
+      </td>
+    </tr>
+  </table>
 
-    <div class="day">
-      <div class="dtitle"><span class="d">Šeštadienis</span><span class="dd">06.12 → 13 · pagrindinė diena</span></div>
-      <div class="tl">
-        <div class="ev">
-          <div class="t">rytas</div>
-          <div class="a">Blaivymasis + pusryčiai</div>
-          <div class="m">Kiaušinienė / košės / dribsniai. Chill prie sodybos: kubilas, krepšinis, tinklinis, baidarės.</div>
+  <div class="day-heading">Šeštadienis &mdash; 06.13 &middot; pagrindin&#279; diena</div>
+  <table class="tl" cellspacing="0" cellpadding="0">
+    <tr>
+      <td class="time">rytas</td>
+      <td class="act">Blaivymasis + pusry&#269;iai</td>
+      <td class="desc">Kiau&#353;inien&#279; / ko&#353;&#279;s / dribsniai. Chill prie sodybos: krep&#353;inis, tinklinis, baidari&#7117;s.</td>
+    </tr>
+    <tr>
+      <td class="time">~14:30</td>
+      <td class="act">Greiti piet&#363;s</td>
+      <td class="desc">Pakeliui prie veikl&#371; (restoranas, ~40&euro;/asm. u&#382; abu pietus).</td>
+    </tr>
+    <tr class="key">
+      <td class="time">~15:00</td>
+      <td class="act">RC ma&#353;in&#279;l&#279;s + Footgolf</td>
+      <td class="desc"><b>U&#382;rezervuota</b> (Marius). RC bekel&#279;s trasa &mdash; pagrindin&#279; veikla; footgolf chill. ~180&euro;.<br />
+        <div class="ev-links">
+          <a href="https://rcrokiskis.lt/" target="_blank">rcrokiskis.lt</a>
+          <a href="https://monteball.eu/" target="_blank">monteball.eu</a>
         </div>
-        <div class="ev">
-          <div class="t">~14:30</div>
-          <div class="a">Greiti pietūs</div>
-          <div class="m">Pakeliui prie veiklų (restoranas, ~40 €/asm. už abu pietus).</div>
-        </div>
-        <div class="ev key">
-          <div class="t">~15:00</div>
-          <div class="a">RC mašinėlės + Footgolf 🏎️</div>
-          <div class="m"><b>Užrezervuota</b> (Marius). RC bekelės trasa — pagrindinė veikla; footgolf chill, „vaikštom po laukus su alumi". ~180 €. <span class="leg">~45 min nuo Brazylijos</span></div>
-          <div class="ev-media">
-            <img class="thumb" loading="lazy" src="https://monteball.eu/wp-content/uploads/2025/03/mb4-e1741195502972-795x1024.jpg" alt="Monteball footgolf">
-            <div class="links">
-              <a class="lnk" href="https://rcrokiskis.lt/" target="_blank" rel="noopener">rcrokiskis.lt</a>
-              <a class="lnk" href="https://monteball.eu/" target="_blank" rel="noopener">monteball.eu</a>
-            </div>
-          </div>
-        </div>
-        <div class="ev key">
-          <div class="t">vakaras</div>
-          <div class="a">Brazylija · party plaustas + protmūšis</div>
-          <div class="m">Plaustas su kubilu / pirtis ant ežero. Vakarienė (<b>burgeriai</b>), boardgame'ai, <b>Niko nuotykių protmūšis</b> + Monikos kvizas.</div>
-        </div>
-        <div class="ev">
-          <div class="t">—</div>
-          <div class="a">Galimai prisijungia Adomas Juška</div>
-          <div class="m">Tik šeštadienį (jam tinka tik viena diena).</div>
-        </div>
-      </div>
-    </div>
+      </td>
+    </tr>
+    <tr class="key">
+      <td class="time">vakaras</td>
+      <td class="act">Brazylija &middot; party plaustas + protm&#363;&#353;is</td>
+      <td class="desc">Plaustas su kubilu / pirtis ant e&#382;ero. Vakarien&#279; (<b>burgeriai</b>), boardgame'ai, <b>Niko nuotyki&#371; protm&#363;&#353;is</b> + Monikos kvizas.</td>
+    </tr>
+    <tr>
+      <td class="time">&mdash;</td>
+      <td class="act">Galimai prisijungia Adomas Ju&#353;ka</td>
+      <td class="desc">Tik &#353;e&#353;tadien&#301; (jam tinka tik viena diena).</td>
+    </tr>
+  </table>
 
-    <div class="day">
-      <div class="dtitle"><span class="d">Sekmadienis</span><span class="dd">06.14 · namo</span></div>
-      <div class="tl">
-        <div class="ev">
-          <div class="t">rytas</div>
-          <div class="a">Rytinis kubilas / sportas + pusryčiai</div>
-          <div class="m">Lėtas startas, pasivolioti.</div>
-        </div>
-        <div class="ev key">
-          <div class="t">—</div>
-          <div class="a">🍌 Bananas Nikodemui</div>
-          <div class="m">Ant ežero, vietoje (40 €/15 min, rezervuoti nereikia). Privaloma.</div>
-        </div>
-        <div class="ev">
-          <div class="t">~13:00</div>
-          <div class="a">Išsiregistravimas → namo</div>
-          <div class="m">Kelionė ~2 val., sustojam kažkur pavalgyt.</div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div class="day-heading">Sekmadienis &mdash; 06.14 &middot; namo</div>
+  <table class="tl" cellspacing="0" cellpadding="0">
+    <tr>
+      <td class="time">rytas</td>
+      <td class="act">Rytinis kubilas + pusry&#269;iai</td>
+      <td class="desc">L&#279;tas startas, pasivolioti.</td>
+    </tr>
+    <tr class="key">
+      <td class="time">&mdash;</td>
+      <td class="act">Bananas Nikodemui</td>
+      <td class="desc">Ant e&#382;ero, vietoje (40&euro;/15 min, rezervuoti nereikia). Privaloma.</td>
+    </tr>
+    <tr>
+      <td class="time">~13:00</td>
+      <td class="act">I&#353;siregistravimas &rarr; namo</td>
+      <td class="desc">Kelion&#279; ~2 val., sustojam kažkur pavalgyt.</td>
+    </tr>
+  </table>
 
   <!-- LOGISTICS -->
-  <section id="logistika">
-    <div class="shead"><span class="snum">03</span><h2>Ekipažai ir paėmimai</h2><span class="note">3 mašinos</span></div>
-    <p class="lead">Išvykimas <b>17:30 nuo Konstitucijos pr.</b> Tikslas — dažasvydis 19:00, tad nevėluojam.</p>
+  <h2><span class="snum">03</span>Eki&#382;a&#382;ai ir pa&#279;mimai <small style="font-size:11px;color:#888;font-weight:normal;">3 ma&#353;inos</small></h2>
+  <p>I&#353;vykimas <b>17:30 nuo Konstitucijos pr.</b> Tikslas &mdash; da&#382;asvydis 19:00, tad nev&#279;luojam.</p>
 
-    <div class="cars">
-      <div class="car">
-        <h4>Mašina 1 <span class="drv">Rokas</span></h4>
+  <table class="cars" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <h4>Ma&#353;ina 1 &mdash; Rokas</h4>
         <ul>
-          <li>Rokas <span class="tag">vairuotojas</span></li>
+          <li>Rokas <span class="tag">(vairuotojas)</span></li>
           <li>Dalius Mikalauskas</li>
-          <li class="niko">Nikodemas <span class="tag">jaunikis</span></li>
-          <li>Michael Lan <span class="tag">@ Baltasis tiltas</span></li>
+          <li><b>Nikodemas</b> <span class="tag">(jaunikis)</span></li>
+          <li>Michael Lan <span class="tag">(@ Baltasis tiltas)</span></li>
         </ul>
-      </div>
-      <div class="car">
-        <h4>Mašina 2 <span class="drv">Adomas</span></h4>
+      </td>
+      <td>
+        <h4>Ma&#353;ina 2 &mdash; Adomas</h4>
         <ul>
-          <li>Adomas G. <span class="tag">vairuotojas · telpa 4</span></li>
+          <li>Adomas G. <span class="tag">(vairuotojas, telpa 4)</span></li>
           <li>Marius Gotbergas</li>
-          <li>Šarūnas Totoraitis <span class="tag">iš Karoliniškių</span></li>
+          <li>&#352;ar&#363;nas Totoraitis <span class="tag">(i&#353; Karolin&#353;ki&#371;)</span></li>
         </ul>
-      </div>
-      <div class="car">
-        <h4>Mašina 3 <span class="drv">Lukas</span></h4>
+      </td>
+      <td>
+        <h4>Ma&#353;ina 3 &mdash; Lukas</h4>
         <ul>
-          <li>Lukas <span class="tag">vairuotojas · iš Santaros</span></li>
+          <li>Lukas <span class="tag">(vairuotojas, i&#353; Santar&#371;s)</span></li>
           <li>Mykolas Urbonas</li>
         </ul>
-      </div>
-      <div class="car">
+      </td>
+      <td>
         <h4>Atskirai</h4>
         <ul>
-          <li>Adomas Juška <span class="tag">tik Št · savo eiga</span></li>
-          <li style="color:var(--ink-3)">Joao Pedro — nedalyvauja <span class="tag">vestuvės</span></li>
+          <li>Adomas Ju&#353;ka <span class="tag">(tik &#352;t, savo eiga)</span></li>
+          <li style="color:#aaaaaa;">Joao Pedro &mdash; nedalyvauja <span class="tag">(vestuvės)</span></li>
         </ul>
-      </div>
-    </div>
+      </td>
+    </tr>
+  </table>
 
-    <div class="pickups">
-      <div class="row"><div class="k">17:30</div><div class="val"><b>Konstitucijos pr.</b> — pagrindinis startas, Roko mašina + Nikas</div></div>
-      <div class="row"><div class="k">pakeliui</div><div class="val"><b>Baltasis tiltas</b> — paimamas Michael</div></div>
-      <div class="row"><div class="k">~16–17h</div><div class="val"><b>Santara</b> — Lukas + Mykolas pajuda iš darbo, jungiasi tiesiai prie dažasvydžio</div></div>
-      <div class="row"><div class="k">19:00</div><div class="val"><b>Mileikių g. 1</b>, Vilniaus r. — visi susitinka dažasvydyje</div></div>
-    </div>
+  <table class="pickups" cellspacing="0" cellpadding="0">
+    <tr><td class="k">17:30</td><td><b>Konstitucijos pr.</b> &mdash; pagrindinis startas, Roko ma&#353;ina + Nikas</td></tr>
+    <tr><td class="k">pakeliui</td><td><b>Baltasis tiltas</b> &mdash; paimamas Michael</td></tr>
+    <tr><td class="k">~16&ndash;17h</td><td><b>Santara</b> &mdash; Lukas + Mykolas pajuda i&#353; darbo, jungiasi tiesiai prie da&#382;asvyd&#382;io</td></tr>
+    <tr><td class="k">19:00</td><td><b>Mileiki&#371; g. 1</b>, Vilniaus r. &mdash; visi susitinka da&#382;asvyd&#382;iuje</td></tr>
+  </table>
 
-    <h4 style="font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);margin:22px 0 8px">Atstumai ir laikai</h4>
-    <div class="dist">
-      <div class="row"><span class="seg">Vilnius → dažasvydis (Mileikių g.)</span><span class="km">35 km?</span><span class="min">~35 min</span></div>
-      <div class="row"><span class="seg">Dažasvydis → Brazylija</span><span class="km">—</span><span class="min">~2 val</span></div>
-      <div class="row"><span class="seg">Vilnius → Brazylija (tiesiai)</span><span class="km">~190 km</span><span class="min">~2 val</span></div>
-      <div class="row"><span class="seg">Brazylija → RC mašinėlės (Rokiškis)</span><span class="km">—</span><span class="min">~45 min</span></div>
-    </div>
-  </section>
+  <h3>Atstumai ir laikai</h3>
+  <table class="dist" cellspacing="0" cellpadding="0">
+    <tr><td>Vilnius &rarr; da&#382;asvydis (Mileiki&#371; g.)</td><td class="km">35 km?</td><td class="mins">~35 min</td></tr>
+    <tr><td>Da&#382;asvydis &rarr; Brazylija</td><td class="km">&mdash;</td><td class="mins">~2 val</td></tr>
+    <tr><td>Vilnius &rarr; Brazylija (tiesiai)</td><td class="km">~190 km</td><td class="mins">~2 val</td></tr>
+    <tr><td>Brazylija &rarr; RC ma&#353;in&#279;l&#279;s (Roki&#353;kis)</td><td class="km">&mdash;</td><td class="mins">~45 min</td></tr>
+  </table>
 
   <!-- FOOD -->
-  <section id="maistas">
-    <div class="shead"><span class="snum">04</span><h2>Maistas ir gėrimai</h2><span class="note">perka Mykolas</span></div>
-    <p class="lead">Viską superka <b>Mykolas</b> (~500 €, į Splitwise). 2 pietūs restoranuose — atskirai, ~40 €/asm. Alkoholį kiekvienas dar pasiima sau; Niko alkoholiu rūpinasi Lukas. Kainos žemiau — įvertintos.</p>
-    <div class="meals">
-      <div class="meal night">
-        <div class="meal-when">Pn · naktis<span>~23:00</span></div>
-        <div class="meal-body">
-          <div class="mb"><span class="lbl">Vakarienė</span>🍖 Šašlykai</div>
-          <div class="mb"><span class="lbl">Gėrimai</span>🍺 ~25 skard. alaus · 🥃 džinas/tekila · 🥤 gaivieji</div>
-        </div>
-        <div class="meal-cost">~175 €<small>~20 €/asm.</small></div>
-      </div>
-      <div class="meal">
-        <div class="meal-when">Št · pusryčiai</div>
-        <div class="meal-body">
-          <div class="mb"><span class="lbl">Valgom</span>🍳 Kiaušinienė, košės, dribsniai, bomžpakiai</div>
-        </div>
-        <div class="meal-cost">~30 €</div>
-      </div>
-      <div class="meal">
-        <div class="meal-when">Št · pietūs<span>pakeliui</span></div>
-        <div class="meal-body">
-          <div class="mb"><span class="lbl">Valgom</span>🍽️ Restorane prie veiklų (RC / footgolf)</div>
-          <div class="mb"><span class="lbl">Gėrimai</span>🍺 alus „po lauką" footgolfe</div>
-        </div>
-        <div class="meal-cost">~20 €/asm.<small>mokam patys</small></div>
-      </div>
-      <div class="meal">
-        <div class="meal-when">Št · vakarienė</div>
-        <div class="meal-body">
-          <div class="mb"><span class="lbl">Vakarienė</span>🍔 Burgeriai</div>
-          <div class="mb"><span class="lbl">Užkandžiai</span>🥨 Humusai, riešutai, traškučiai, saldumynai</div>
-        </div>
-        <div class="meal-cost">~125 €</div>
-      </div>
-      <div class="meal night">
-        <div class="meal-when">Št · naktis<span>protmūšis</span></div>
-        <div class="meal-body">
-          <div class="mb"><span class="lbl">Gėrimai</span>🍺 ~25 skard. alaus · 🥃 likę stiprieji · 🥤 gaivieji</div>
-        </div>
-        <div class="meal-cost">~85 €<small>~10 €/asm.</small></div>
-      </div>
-      <div class="meal">
-        <div class="meal-when">Sk · pusryčiai</div>
-        <div class="meal-body">
-          <div class="mb"><span class="lbl">Valgom</span>🍳 Antri pusryčiai / liekanos</div>
-        </div>
-        <div class="meal-cost">~30 €</div>
-      </div>
-      <div class="meal">
-        <div class="meal-when">Sk · pietūs<span>namo kelyje</span></div>
-        <div class="meal-body">
-          <div class="mb"><span class="lbl">Valgom</span>🍽️ Restorane pakeliui namo</div>
-          <div class="mb"><span class="lbl">Alko</span>— minimalus / nėra, visi vairuoja</div>
-        </div>
-        <div class="meal-cost">~20 €/asm.<small>mokam patys</small></div>
-      </div>
-    </div>
-    <div class="callout"><b>Sekmadienis = lengvai:</b> tik pusryčiai (liekanos) + pietūs pakeliui namo. Alkoholio beveik nereikia — vairuojam. Vakarienės nėra.</div>
-    <div class="grid2" style="margin-top:14px">
-      <div class="box">
-        <h4>Bazinės atsargos (perka Mykolas)</h4>
+  <h2><span class="snum">04</span>Maistas ir g&#279;rimai <small style="font-size:11px;color:#888;font-weight:normal;">perka Mykolas</small></h2>
+  <p>Visk&#261; superka <b>Mykolas</b> (~500&euro;, &#301; Splitwise). 2 piet&#363;s restoranuose &mdash; atskirai, ~40&euro;/asm. Alkohol&#301; kiekvienas dar pasiima sau; Niko alkoholiu r&#363;pinasi Lukas.</p>
+
+  <table class="meals" cellspacing="0" cellpadding="0">
+    <tr class="night">
+      <td class="when">Pn &middot; naktis<br /><span style="font-size:10px;color:#888;">~23:00</span></td>
+      <td><span class="lbl2">Vakarien&#279;</span> Šašlykai &nbsp; <span class="lbl2">G&#279;rimai</span> ~25 skard. alaus &middot; d&#382;inas/tekila &middot; gaivieji</td>
+      <td class="cost">~175&euro;<br /><span style="font-weight:normal;font-size:10px;color:#888;">~20&euro;/asm.</span></td>
+    </tr>
+    <tr>
+      <td class="when">Št &middot; pusry&#269;iai</td>
+      <td><span class="lbl2">Valgom</span> Kiau&#353;inien&#279;, ko&#353;&#279;s, dribsniai, bom&#382;pakiai</td>
+      <td class="cost">~30&euro;</td>
+    </tr>
+    <tr>
+      <td class="when">Št &middot; piet&#363;s<br /><span style="font-size:10px;color:#888;">pakeliui</span></td>
+      <td><span class="lbl2">Valgom</span> Restorane prie veikl&#371; &nbsp; <span class="lbl2">G&#279;rimai</span> Alus po footgolf&#261;</td>
+      <td class="cost">~20&euro;/asm.<br /><span style="font-weight:normal;font-size:10px;color:#888;">mokam patys</span></td>
+    </tr>
+    <tr>
+      <td class="when">Št &middot; vakarien&#279;</td>
+      <td><span class="lbl2">Vakarien&#279;</span> Burgeriai &nbsp; <span class="lbl2">U&#382;kand&#382;iai</span> Humusai, rie&#353;utai, tra&#353;ku&#269;iai</td>
+      <td class="cost">~125&euro;</td>
+    </tr>
+    <tr class="night">
+      <td class="when">Št &middot; naktis<br /><span style="font-size:10px;color:#888;">protm&#363;&#353;is</span></td>
+      <td><span class="lbl2">G&#279;rimai</span> ~25 skard. alaus &middot; lik&#279; stiprieji &middot; gaivieji</td>
+      <td class="cost">~85&euro;<br /><span style="font-weight:normal;font-size:10px;color:#888;">~10&euro;/asm.</span></td>
+    </tr>
+    <tr>
+      <td class="when">Sk &middot; pusry&#269;iai</td>
+      <td><span class="lbl2">Valgom</span> Antri pusry&#269;iai / liekanos</td>
+      <td class="cost">~30&euro;</td>
+    </tr>
+    <tr>
+      <td class="when">Sk &middot; piet&#363;s<br /><span style="font-size:10px;color:#888;">namo kelyje</span></td>
+      <td><span class="lbl2">Valgom</span> Restorane pakeliui namo &nbsp; <span class="lbl2">Alko</span> Minimalus / n&#279;ra, visi vairuoja</td>
+      <td class="cost">~20&euro;/asm.<br /><span style="font-weight:normal;font-size:10px;color:#888;">mokam patys</span></td>
+    </tr>
+  </table>
+
+  <div class="callout"><b>Sekmadienis = lengvai:</b> tik pusry&#269;iai (liekanos) + piet&#363;s pakeliui namo. Alkoholio beveik nereikia &mdash; vairuojam.</div>
+
+  <table class="boxes" cellspacing="0" cellpadding="0" style="margin-top:10px;">
+    <tr>
+      <td>
+        <h4>Bazin&#279;s atsargos (perka Mykolas)</h4>
         <ul>
-          <li><b>25 l alaus</b> ≈ 50 skard. → po ~25/naktį</li>
-          <li><b>2 l džino + 1 l tekilos</b></li>
+          <li><b>25 l alaus</b> ≈ 50 skard. &rarr; po ~25/nakt&#301;</li>
+          <li><b>2 l d&#382;ino + 1 l tekilos</b></li>
           <li>Gaivieji (soft drinks)</li>
         </ul>
-      </div>
-      <div class="box">
-        <h4>Niko gėrimai (perka Lukas)</h4>
+      </td>
+      <td>
+        <h4>Niko g&#279;rimai (perka Lukas)</h4>
         <ul>
           <li>Kvietinis alus / <b>Varniukai</b></li>
-          <li>Vodka arba džinas</li>
-          <li><b>Nemaišyt per daug</b> — taip prašė pats</li>
+          <li>Vodka arba d&#382;inas</li>
+          <li><b>Nemai&#353;yt per daug</b> &mdash; taip pra&#353;&#279; pats</li>
         </ul>
-      </div>
-    </div>
-    <div class="callout">Turim <b>16 skardinių alaus</b> jau dabar — tai įskaičiuota skaičiuoklėje žemiau.</div>
-  </section>
+      </td>
+    </tr>
+  </table>
+  <div class="callout">Turim <b>16 skardin&#279;s alaus</b> jau dabar &mdash; tai &#301;skai&#269;iuota skai&#269;iuokl&#279;je &#382;emiau.</div>
 
   <!-- ALCOHOL CALCULATOR -->
-  <section id="skaiciuokle">
-    <div class="shead"><span class="snum">05</span><h2>Alkoholio skaičiuoklė</h2><span class="note">2 naktys · grynasis alkoholis</span></div>
-    <p class="lead">Kiekviena naktis atskirai. Tikslas — <b>0.5–2L vyno ekv.</b> grynojo alkoholio žmogui per naktį. 16 turimų skardinių: po 8 kiekvienai. Pridėk gėrimų per <b>+ Pridėti</b>, keisk kiekius — diagrama atsinaujina iš karto.</p>
+  <h2><span class="snum">05</span>Alkoholio skai&#269;iuokl&#279; <small style="font-size:11px;color:#888;font-weight:normal;">2 naktys &middot; grynasis alkoholis</small></h2>
+  <p>Kiekviena naktis atskirai. Tikslas &mdash; <b>0.5&ndash;2L vyno ekv.</b> grynojo alkoholio žmogui per nakt&#301;. Pridėk g&#279;rim&#371; per <b>+ Prid&#279;ti</b>, keisk kiekius &mdash; diagrama atsinaujina i&#353; karto.</p>
 
-    <div class="ac-top">
-      <div class="ac-people">
-        <span class="lbl">Geriančių žmonių</span>
-        <div class="ctrl" style="width:130px">
-          <button id="acpm" type="button">–</button>
-          <input id="acpv" type="number" value="9" min="1" max="40" inputmode="numeric">
-          <button id="acpp" type="button">+</button>
-        </div>
-      </div>
-      <div class="ac-legend">
-        <span class="acleg"><span class="sw" style="background:#d0d0d0"></span>Alus/sidras</span>
-        <span class="acleg"><span class="sw" style="background:#999"></span>Vynas</span>
-        <span class="acleg"><span class="sw" style="background:#222"></span>Stiprieji</span>
-        <span class="acleg"><span class="sw" style="background:#e4f0e4;border:1px dashed #9a9"></span>OK zona</span>
-      </div>
-    </div>
+  <div class="ac-people">
+    <label for="acpv">Gerian&#269;i&#371; žmoni&#371;:</label>
+    <input type="number" id="acpv" value="9" min="1" max="40" />
+  </div>
 
-    <div class="ac-grid">
-      <div class="ac-panel" id="ac-panel-0"></div>
-      <div class="ac-panel" id="ac-panel-1"></div>
-    </div>
-  </section>
+  <table class="ac-grid" cellspacing="0" cellpadding="0">
+    <tr>
+      <td><div class="ac-panel" id="ac-panel-0"></div></td>
+      <td><div class="ac-panel" id="ac-panel-1"></div></td>
+    </tr>
+  </table>
 
   <!-- DRESS CODE -->
-  <section id="apranga">
-    <div class="shead"><span class="snum">06</span><h2>Dress code</h2><span class="note">išgyvenimo stovykla</span></div>
-    <p class="lead">Jokių kostiumų. „Šliubinės kelnės ir lakerkos" — tik kaip pokštas. Viskas labai chill, bet aktyvu.</p>
-    <ul class="checks">
-      <li><b>Sportiški drabužiai</b><span class="sub">Visą savaitgalį judam — patogu ir laisvai.</span></li>
-      <li><b>Drabužiai, kurių negaila</b><span class="sub">Dažasvydžiui — ilgomis rankovėmis ir kelnėmis (kamuoliukai palieka mėlynes). Gali ištepti.</span></li>
-      <li><b>Maudymosi apranga</b><span class="sub">Kubilui, plaustui, bananui, ežerui. (Rokas grasino net plaukmenimis.)</span></li>
-      <li><b>Šiltesnis sluoksnis vakarui</b><span class="sub">Vakarais ~11–14° — striukė / hudis prie kubilo.</span></li>
-      <li><b>Nikui:</b> sportiška + maudymosi<span class="sub">Jis nežino, ką darys — „paliktas išgyvenimo stovyklai".</span></li>
-    </ul>
-  </section>
+  <h2><span class="snum">06</span>Dress code <small style="font-size:11px;color:#888;font-weight:normal;">i&#353;gyvenimo stovykla</small></h2>
+  <p>Joki&#371; kostium&#371;. Viskas labai chill, bet aktyvu.</p>
+  <ul class="checks">
+    <li><b>Sportiški drabužiai</b><span class="sub">Vis&#261; savaitgal&#301; judam &mdash; patogu ir laisvai.</span></li>
+    <li><b>Drabužiai, kuri&#371; negaila</b><span class="sub">Da&#382;asvydžiui &mdash; ilgomis rankov&#279;mis ir keln&#279;mis. Gali ite&#353;pti.</span></li>
+    <li><b>Maudymosi apranga</b><span class="sub">Kubilui, plaustui, bananui, e&#382;erui.</span></li>
+    <li><b>Šiltesnis sluoksnis vakarui</b><span class="sub">Vakarais ~11&ndash;14&deg; &mdash; striuk&#279; / hudis prie kubilo.</span></li>
+    <li><b>Nikui:</b> sportiška + maudymosi<span class="sub">Jis nežino, k&#261; darys &mdash; &bdquo;paliktas i&#353;gyvenimo stovyklai&ldquo;.</span></li>
+  </ul>
 
   <!-- HOMEWORK -->
-  <section id="namudarbai">
-    <div class="shead"><span class="snum">07</span><h2>Namų darbai</h2><span class="note">kiekvienam · iki Pn</span></div>
-    <ul class="checks">
-      <li><b>2 klausimai / istorijos</b> Niko nuotykių protmūšiui<span class="sub">Kiekvienas sugalvoja po du.</span></li>
-      <li><b>Niko &amp; Monikos kvizas</b><span class="sub">Ką gerai pažįsti porą?</span></li>
-      <li><b>Monikos „top 5"</b> — ką labiausiai mėgsta / pisina Nikas<span class="sub">Rokas jau paprašė Monikos sąrašo.</span></li>
-      <li><b>Boardgame'ai vakarui</b><span class="sub">Atsivežti, ką turit.</span></li>
-    </ul>
-  </section>
+  <h2><span class="snum">07</span>Nam&#371; darbai <small style="font-size:11px;color:#888;font-weight:normal;">kiekvienam &middot; iki Pn</small></h2>
+  <ul class="checks">
+    <li><b>2 klausimai / istorijos</b> Niko nuotyki&#371; protm&#363;&#353;iui<span class="sub">Kiekvienas sugalvoja po du.</span></li>
+    <li><b>Niko &amp; Monikos kvizas</b><span class="sub">K&#261; gerai pa&#382;&#301;sti por&#261;?</span></li>
+    <li><b>Monikos &bdquo;top 5&ldquo;</b> &mdash; k&#261; labiausiai m&#279;gsta / pisina Nikas<span class="sub">Rokas jau papra&#353;&#279; Monikos s&#261;ra&#353;o.</span></li>
+    <li><b>Boardgame'ai vakarui</b><span class="sub">Atsivežti, k&#261; turit.</span></li>
+  </ul>
 
   <!-- ACTIVITIES LOG -->
-  <section id="veiklos">
-    <div class="shead"><span class="snum">08</span><h2>Veiklos</h2><span class="note">kas pasirinkta vs atmesta</span></div>
-    <div class="acts">
-      <div class="col sel">
-        <h4>✓ Pasirinkta</h4>
-        <ul>
-          <li><span class="mk">✓</span><div><b><a class="inl" href="https://www.google.com/maps/place/Paintball,+Airsoft+center/@54.9466198,25.3452584,15z" target="_blank" rel="noopener">Dažasvydis</a></b> — Pn 19:00, Mileikių g. 1, 500 kam., 350 €</div></li>
-          <li><span class="mk">✓</span><div><b><a class="inl" href="https://rcrokiskis.lt/" target="_blank" rel="noopener">RC mašinėlės</a></b> — Št, Rokiškio trasa</div></li>
-          <li><span class="mk">✓</span><div><b><a class="inl" href="https://monteball.eu/" target="_blank" rel="noopener">Footgolf / Monteball</a></b> — Št, kartu su RC (~180 € abu)</div></li>
-          <li><span class="mk">✓</span><div><b>Bananas</b> — Sk, prie sodybos, 40 €</div></li>
-          <li><span class="mk">✓</span><div><b>Kubilas / party plaustas</b> — Brazylijoj</div></li>
-          <li><span class="mk">✓</span><div><b>Pirtis</b> — ant ežero kranto</div></li>
-          <li><span class="mk">✓</span><div>Sodybos sportas: krepšinis, tinklinis, futbolas, tenisas, baidarės</div></li>
-          <li><span class="mk">✓</span><div>Protmūšiai + boardgame'ai (žr. namų darbus)</div></li>
+  <h2><span class="snum">08</span>Veiklos <small style="font-size:11px;color:#888;font-weight:normal;">kas pasirinkta vs atmesta</small></h2>
+  <table class="acts" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <h4>&#10003; Pasirinkta</h4>
+        <ul class="sel">
+          <li><span class="mk">&#10003;</span><b><a href="https://www.google.com/maps/place/Paintball,+Airsoft+center/@54.9466198,25.3452584,15z" target="_blank">Da&#382;asvydis</a></b> &mdash; Pn 19:00, Mileiki&#371; g. 1, 500 kam., 350&euro;</li>
+          <li><span class="mk">&#10003;</span><b><a href="https://rcrokiskis.lt/" target="_blank">RC ma&#353;in&#279;l&#279;s</a></b> &mdash; Št, Roki&#353;kio trasa</li>
+          <li><span class="mk">&#10003;</span><b><a href="https://monteball.eu/" target="_blank">Footgolf / Monteball</a></b> &mdash; Št, kartu su RC (~180&euro; abu)</li>
+          <li><span class="mk">&#10003;</span><b>Bananas</b> &mdash; Sk, prie sodybos, 40&euro;</li>
+          <li><span class="mk">&#10003;</span><b>Kubilas / party plaustas</b> &mdash; Brazylijoj</li>
+          <li><span class="mk">&#10003;</span><b>Pirtis</b> &mdash; ant e&#382;ero kranto</li>
+          <li><span class="mk">&#10003;</span>Sodybos sportas: krep&#353;inis, tinklinis, futbolas, tenisas, baidari&#279;s</li>
+          <li><span class="mk">&#10003;</span>Protm&#363;&#353;iai + boardgame'ai</li>
         </ul>
-      </div>
-      <div class="col rej">
-        <h4>✗ Svarstyta / atmesta</h4>
-        <ul>
-          <li><span class="mk">✗</span><div><span class="name">Grand Resort batutų parkas</span> <span class="why">— nereikia</span></div></li>
-          <li><span class="mk">✗</span><div><a class="inl" href="https://waterinn.lt/parkai/zarasai/" target="_blank" rel="noopener"><span class="name">Wake Inn / Waterinn (Zarasai)</span></a> <span class="why">— vietoj jo dažasvydis</span></div></li>
-          <li><span class="mk">✗</span><div><a class="inl" href="https://www.rokiskiotic.lt/objektai/aqua-jump-rokiskis" target="_blank" rel="noopener"><span class="name">Aqua jump Rokiškis</span></a></div></li>
-          <li><span class="mk">✗</span><div><a class="inl" href="https://www.pamatyklietuvoje.lt/pramogos/saudymas-is-lanko/4551" target="_blank" rel="noopener"><span class="name">Šaudymas iš lanko</span></a> <span class="why">— idėja pakeliui</span></div></li>
-          <li><span class="mk">✗</span><div><span class="name">Lobių paieška su detektoriais</span> <span class="why">— gal Nikui, nepatvirtinta</span></div></li>
-          <li><span class="mk">✗</span><div><a class="inl" href="https://www.youtube.com/watch?v=J2f5C39Hk-A" target="_blank" rel="noopener"><span class="name">Rubikių apžvalgos bokštas</span></a></div></li>
-          <li><span class="mk">✗</span><div><a class="inl" href="https://infoanyksciai.lt/lankytinos-vietos/mikieriu-atodanga/" target="_blank" rel="noopener"><span class="name">Mikierių atodanga / kabantis tiltas / danielynas</span></a></div></li>
-          <li><span class="mk">✗</span><div><span class="name">Strip club Daugpilis</span> <span class="why">— Luko „pokštas"</span></div></li>
+      </td>
+      <td>
+        <h4>&#10007; Svarsyta / atmesta</h4>
+        <ul class="rej">
+          <li><span class="mk">&#10007;</span><span class="name">Grand Resort batut&#371; parkas</span> <span style="color:#aaa;font-style:italic;">&mdash; nereikia</span></li>
+          <li><span class="mk">&#10007;</span><a href="https://waterinn.lt/parkai/zarasai/" target="_blank"><span class="name">Wake Inn / Waterinn (Zarasai)</span></a> <span style="color:#aaa;font-style:italic;">&mdash; vietoj jo da&#382;asvydis</span></li>
+          <li><span class="mk">&#10007;</span><a href="https://www.rokiskiotic.lt/objektai/aqua-jump-rokiskis" target="_blank"><span class="name">Aqua jump Roki&#353;kis</span></a></li>
+          <li><span class="mk">&#10007;</span><a href="https://www.pamatyklietuvoje.lt/pramogos/saudymas-is-lanko/4551" target="_blank"><span class="name">Šaudymas i&#353; lanko</span></a> <span style="color:#aaa;font-style:italic;">&mdash; id&#279;ja pakeliui</span></li>
+          <li><span class="mk">&#10007;</span><span class="name">Lobi&#371; paie&#353;ka su detektoriais</span></li>
+          <li><span class="mk">&#10007;</span><span class="name">Strip club Daugpilis</span> <span style="color:#aaa;font-style:italic;">&mdash; Luko &bdquo;pok&#353;tas&ldquo;</span></li>
         </ul>
-      </div>
-    </div>
-    <div class="callout"><b>Nakvynė:</b> iš daugybės variantų (Airbnb, Farmhouse Rita prie Lenkijos, Aukštadvaris, Gervės Manor, Šarkos sodyba, Trakų pirtelė, glamping) pasirinkta <b><a class="inl" href="https://www.sodyba-brazylija.lt/namelis/vasarnamis-su-terasa/" target="_blank" rel="noopener">Sodyba Brazylija</a></b> — vienas namas, 5 kambariai, viešbutuko tipo, 300 €/naktis.</div>
-  </section>
+      </td>
+    </tr>
+  </table>
+  <div class="callout"><b>Nakvyn&#279;:</b> pasirinkta <b><a href="https://www.sodyba-brazylija.lt/namelis/vasarnamis-su-terasa/" target="_blank">Sodyba Brazylija</a></b> &mdash; vienas namas, 5 kambariai, viešbutuko tipo, 300&euro;/naktis.</div>
 
   <!-- BUDGET -->
-  <section id="biudzetas">
-    <div class="shead"><span class="snum">09</span><h2>Biudžetas</h2><span class="note">orientyras · per Splitwise</span></div>
-    <div class="budget">
-      <div class="row"><div><div class="item">Nakvynė</div><div class="sub">600 € · 2 naktys, vienas namas</div></div><div class="amt">600 €</div><div class="pp">~60 €/asm.</div></div>
-      <div class="row"><div><div class="item">Dažasvydis</div><div class="sub">500 kamuoliukų</div></div><div class="amt">350 €</div><div class="pp">~40 €/asm.</div></div>
-      <div class="row"><div><div class="item">RC + footgolf</div><div class="sub">šeštadienis</div></div><div class="amt">180 €</div><div class="pp">~20 €/asm.</div></div>
-      <div class="row"><div><div class="item">Maistas + gėrimai</div><div class="sub">+ 2 pietūs lauke</div></div><div class="amt">~500 €</div><div class="pp">~90 €/asm.</div></div>
-      <div class="row"><div><div class="item">Kuras</div><div class="sub">3 mašinos</div></div><div class="amt">~200 €</div><div class="pp">~22 €/asm.</div></div>
-      <div class="row"><div><div class="item">Bananas + pirtis + kubilas</div><div class="sub">40 + 100 + 130 €</div></div><div class="amt">~270 €</div><div class="pp">~30 €/asm.</div></div>
-      <div class="row tot"><div class="item">Orientyras vienam</div><div class="amt"></div><div class="pp">~250 €</div></div>
-    </div>
-    <div class="callout"><b><a class="inl" href="https://www.splitwise.com/join/AYyo7LP3xMP+nw9d6?v=e" target="_blank" rel="noopener">Splitwise</a>:</b> grupė sukurta (Rokas). Visi įmeta išlaidas ten, kad nereikėtų ieškoti per chatą. Niko alkoholį dengia Lukas → į Splitwise. <b>Trūksta narių Splitwise'e</b> — ypač Mykolas (perka visą maistą!), Michael, Adomas Juška.</div>
-  </section>
+  <h2><span class="snum">09</span>Biudžetas <small style="font-size:11px;color:#888;font-weight:normal;">orientyras &middot; per Splitwise</small></h2>
+  <table class="budget" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>Nakvyn&#279;<span class="sub">600&euro; &middot; 2 naktys, vienas namas</span></td>
+      <td class="amt">600&euro;</td>
+      <td class="pp">~60&euro;/asm.</td>
+    </tr>
+    <tr>
+      <td>Da&#382;asvydis<span class="sub">500 kamuo li&#371;k&#371;</span></td>
+      <td class="amt">350&euro;</td>
+      <td class="pp">~40&euro;/asm.</td>
+    </tr>
+    <tr>
+      <td>RC + footgolf<span class="sub">&#353;e&#353;tadienis</span></td>
+      <td class="amt">180&euro;</td>
+      <td class="pp">~20&euro;/asm.</td>
+    </tr>
+    <tr>
+      <td>Maistas + g&#279;rimai<span class="sub">+ 2 piet&#363;s lauke</span></td>
+      <td class="amt">~500&euro;</td>
+      <td class="pp">~90&euro;/asm.</td>
+    </tr>
+    <tr>
+      <td>Kuras<span class="sub">3 ma&#353;inos</span></td>
+      <td class="amt">~200&euro;</td>
+      <td class="pp">~22&euro;/asm.</td>
+    </tr>
+    <tr>
+      <td>Bananas + pirtis + kubilas<span class="sub">40 + 100 + 130&euro;</span></td>
+      <td class="amt">~270&euro;</td>
+      <td class="pp">~30&euro;/asm.</td>
+    </tr>
+    <tr class="tot">
+      <td>Orientyras vienam</td>
+      <td class="amt"></td>
+      <td class="pp">~250&euro;</td>
+    </tr>
+  </table>
+  <div class="callout"><b><a href="https://www.splitwise.com/join/AYyo7LP3xMP+nw9d6?v=e" target="_blank">Splitwise</a>:</b> grup&#279; sukurta (Rokas). Visi &#301;meta i&#353;laidas ten. <b>Tr&#363;ksta nari&#371; Splitwise'e</b> &mdash; ypa&#269; Mykolas (perka vis&#261; mais&#261;!), Michael, Adomas Ju&#353;ka.</div>
 
-  <!-- SETTLEMENT FLOW -->
-  <section id="apmokejimas">
-    <div class="shead"><span class="snum">10</span><h2>Atsiskaitymas</h2><span class="note">greedy min. sandoriai</span></div>
-    <p class="lead">Kairėje — kas moka. Dešinėje — kas gauna atgal (ir už ką jie mokėjo). Linijų storis proporcingas sumai. <b>7 sandoriai</b> — matematiškai mažiausias įmanomas kiekis (tas pats Splitwise algoritmas).</p>
-    <div id="settle-flow"></div>
-    <ul class="sf-list" id="settle-list"></ul>
-  </section>
+  <!-- SETTLEMENT -->
+  <h2><span class="snum">10</span>Atsiskaitymas <small style="font-size:11px;color:#888;font-weight:normal;">greedy min. sandoriai</small></h2>
+  <p>7 sandoriai &mdash; matemati&#353;kai mažiausias &#301;manomas kiekis. Lygi dalis: <b>203.75&euro;/asm.</b></p>
+  <table class="settle" cellspacing="0" cellpadding="0">
+    <tr>
+      <th>Kas moka</th>
+      <th>&rarr; Kam</th>
+      <th>U&#382; k&#261;</th>
+      <th style="text-align:right;">Suma</th>
+    </tr>
+    <tr><td class="from">Michael</td><td class="to">Rokas</td><td>dalis i&#353;laid&#371;</td><td class="amt">203.75&euro;</td></tr>
+    <tr><td class="from">Lukas</td><td class="to">Rokas</td><td>dalis i&#353;laid&#371;</td><td class="amt">192.50&euro;</td></tr>
+    <tr><td class="from">Lukas</td><td class="to">Mykolas</td><td>dalis i&#353;laid&#371;</td><td class="amt">11.25&euro;</td></tr>
+    <tr><td class="from">Dalius</td><td class="to">Mykolas</td><td>dalis i&#353;laid&#371;</td><td class="amt">203.75&euro;</td></tr>
+    <tr><td class="from">Adomas G.</td><td class="to">Mykolas</td><td>dalis i&#353;laid&#371;</td><td class="amt">81.25&euro;</td></tr>
+    <tr><td class="from">Adomas G.</td><td class="to">&#352;ar&#363;nas</td><td>dalis i&#353;laid&#371;</td><td class="amt">122.50&euro;</td></tr>
+    <tr><td class="from">Marius</td><td class="to">&#352;ar&#363;nas</td><td>dalis i&#353;laid&#371;</td><td class="amt">23.75&euro;</td></tr>
+  </table>
+  <p style="font-size:11px;color:#888888;">Rokas: Brazylija + avansu 600&euro; &middot; Mykolas: Maistas + g&#279;rimai + avansu 500&euro; &middot; &#352;ar&#363;nas: Da&#382;asvydis + avansu 350&euro; &middot; Marius: RC 180&euro; sumok&#279;ta, bet share &gt; paid</p>
 
-  <footer>
-    <span>NIKO BERNVAKARIS · 06.12–14.2026</span>
-    <span>Brazylija · 8 + Nikas</span>
-  </footer>
+  <div id="footer">
+    <span>NIKO BERNVAKARIS &middot; 06.12&ndash;14.2026</span>
+    &nbsp;&nbsp;
+    <span>Brazylija &middot; 8 + Nikas</span>
+  </div>
 
 </div>
 
-<script>
+<script type="text/javascript">
 (function(){
   var PRESETS=[
     {key:'beer_can', label:'Alus 0.5L skardinė', vol:0.5,  abv:0.05, cat:'beer'},
@@ -827,9 +888,9 @@
     {key:'vodka',    label:'Degtinė 0.7L',         vol:0.7,  abv:0.40, cat:'spirits'},
     {key:'whisky',   label:'Viskis 0.7L',          vol:0.7,  abv:0.40, cat:'spirits'},
     {key:'cider',    label:'Sidras 0.5L',          vol:0.5,  abv:0.05, cat:'beer'},
-    {key:'custom',   label:'Kita (0.7L 12%)',      vol:0.7,  abv:0.12, cat:'wine'},
+    {key:'custom',   label:'Kita (0.7L 12%)',      vol:0.7,  abv:0.12, cat:'wine'}
   ];
-  var COLORS={beer:'#d0d0d0',wine:'#999999',spirits:'#222222'};
+  var COLORS={beer:'#c0c0c0',wine:'#888888',spirits:'#222222'};
   var MAX_SCALE=0.35, OKmin=0.06, OKmax=0.24;
   var people=9;
   var nights=[
@@ -837,14 +898,14 @@
      items:[
        {id:1,key:'beer_can',label:'Alus 0.5L skardinė',qty:8,  vol:0.5,abv:0.05,cat:'beer'},
        {id:2,key:'gin',     label:'Džinas 0.7L',        qty:1,  vol:0.7,abv:0.40,cat:'spirits'},
-       {id:3,key:'tequila', label:'Tekila 0.7L',        qty:0.5,vol:0.7,abv:0.40,cat:'spirits'},
+       {id:3,key:'tequila', label:'Tekila 0.7L',        qty:0.5,vol:0.7,abv:0.40,cat:'spirits'}
      ]},
     {id:1,name:'ŠEŠTADIENIS',sub:'2-a naktis · Št 13.06',target:0.12,nextId:4,
      items:[
        {id:1,key:'beer_can',label:'Alus 0.5L skardinė',qty:8,  vol:0.5,abv:0.05,cat:'beer'},
        {id:2,key:'gin',     label:'Džinas 0.7L',        qty:1,  vol:0.7,abv:0.40,cat:'spirits'},
-       {id:3,key:'tequila', label:'Tekila 0.7L',        qty:0.5,vol:0.7,abv:0.40,cat:'spirits'},
-     ]},
+       {id:3,key:'tequila', label:'Tekila 0.7L',        qty:0.5,vol:0.7,abv:0.40,cat:'spirits'}
+     ]}
   ];
 
   function pa(it){return it.qty*it.vol*it.abv;}
@@ -862,17 +923,15 @@
 
     var status,cls;
     if(perP<OKmin){status='Per mažai &lt;0.5L vyno ekv.';cls='blow';}
-    else if(perP>OKmax){status='Daug &gt;2L vyno ekv. 😅';cls='bhigh';}
-    else{status='OK ✓';cls='bok';}
+    else if(perP>OKmax){status='Daug &gt;2L vyno ekv.';cls='bhigh';}
+    else{status='OK';cls='bok';}
 
-    // stacked bar segments
     var segs='',cum=0;
     n.items.forEach(function(it,i){
       var pp=people>0?pa(it)/people:0;
       var w=Math.min(pp/MAX_SCALE*100,100-cum);
       if(w>0.01){
-        var br=i===0?'border-radius:4px 0 0 4px;':'';
-        segs+='<div class="ac-seg" style="left:'+cum.toFixed(2)+'%;width:'+w.toFixed(2)+'%;background:'+COLORS[it.cat]+';'+br+'"></div>';
+        segs+='<div class="ac-seg" style="left:'+cum.toFixed(2)+'%;width:'+w.toFixed(2)+'%;background:'+COLORS[it.cat]+'"></div>';
         cum+=w;
       }
     });
@@ -881,37 +940,23 @@
     var okW=((OKmax-OKmin)/MAX_SCALE*100).toFixed(1);
     var tL=Math.min(n.target/MAX_SCALE*100,99).toFixed(1);
 
-    // axis
-    var axPts=[
-      {v:0,cls:'aa-first'},{v:OKmin},{v:n.target,tgt:true},{v:OKmax},{v:MAX_SCALE,cls:'aa-last'}
-    ];
-    var ax=axPts.map(function(p){
-      var pct=(p.v/MAX_SCALE*100).toFixed(1);
-      var extra=p.tgt?'style="left:'+pct+'%;color:var(--ink);font-weight:700"':'style="left:'+pct+'%"';
-      return '<span class="'+(p.cls||'')+'" '+extra+'>'+(p.tgt?'▲':'')+mL(p.v)+'mL</span>';
-    }).join('');
-
-    // item rows
     var rows=n.items.map(function(it){
       return '<div class="ac-item">'+
-        '<span>'+esc(it.label)+'</span>'+
-        '<span class="iqty"><input type="number" value="'+it.qty+'" min="0" max="200" step="0.5" data-nid="'+n.id+'" data-iid="'+it.id+'" class="qi" inputmode="decimal"></span>'+
+        '<span class="iname">'+esc(it.label)+'</span>'+
+        '<span class="iqty"><input type="number" value="'+it.qty+'" min="0" max="200" step="0.5" data-nid="'+n.id+'" data-iid="'+it.id+'" class="qi" /></span>'+
         '<span class="ipure">'+r2(pa(it))+'L</span>'+
-        '<button class="idel" data-nid="'+n.id+'" data-iid="'+it.id+'" type="button">×</button>'+
+        '<button class="idel" data-nid="'+n.id+'" data-iid="'+it.id+'" type="button">x</button>'+
         '</div>';
     }).join('');
 
     var opts=PRESETS.map(function(p){return '<option value="'+p.key+'">'+p.label+'</option>';}).join('');
 
     el.innerHTML=
-      '<div class="ac-phead"><div class="pname">'+n.name+'</div><div class="psub">'+n.sub+'</div></div>'+
-      '<div class="ac-target">'+
-        '<label>Tikslas/asm.</label>'+
-        '<input type="range" min="0.05" max="0.30" step="0.01" value="'+n.target+'" data-nid="'+n.id+'" class="ts">'+
-        '<div class="tval"><b>'+mL(n.target)+'mL</b> <small>~'+wEq(n.target)+'L vyno ekv.</small></div>'+
-      '</div>'+
+      '<div class="ac-phead"><b>'+n.name+'</b><span class="psub"> &middot; '+n.sub+'</span></div>'+
+      '<div class="ac-target"><label>Tikslas/asm.: '+mL(n.target)+'mL</label> (~'+wEq(n.target)+'L vyno ekv.)<br />'+
+        '<input type="range" min="0.05" max="0.30" step="0.01" value="'+n.target+'" data-nid="'+n.id+'" class="ts" style="width:90%;margin-top:4px;" /></div>'+
       '<div class="ac-items">'+
-        '<div class="ac-item ac-head"><span>Gėrimas</span><span>Kiekis</span><span>Grynas</span><span></span></div>'+
+        '<div class="ac-item ac-head"><span class="iname">Gėrimas</span><span class="iqty">Kiekis</span><span class="ipure">Grynas</span><span></span></div>'+
         rows+
       '</div>'+
       '<div class="ac-add">'+
@@ -919,23 +964,22 @@
         '<button class="addbtn" data-nid="'+n.id+'" type="button">+ Pridėti</button>'+
       '</div>'+
       '<div class="ac-diag">'+
-        '<div class="dlbl">Gryn. alkoholis / žmogui  (skalė 0→'+mL(MAX_SCALE)+'mL)</div>'+
+        '<div class="dlbl">Gryn. alkoholis / žm. (skalė 0&rarr;'+mL(MAX_SCALE)+'mL)</div>'+
         '<div class="ac-track">'+
           '<div class="ac-okzone" style="left:'+okL+'%;width:'+okW+'%"></div>'+
           segs+
           '<div class="ac-tgt" style="left:'+tL+'%"></div>'+
         '</div>'+
-        '<div class="ac-axis">'+ax+'</div>'+
+        '<div class="ac-axis"><span style="left:0">0</span><span style="left:'+okL+'%">'+mL(OKmin)+'</span><span style="left:'+tL+'%;font-weight:bold;">&#9650;'+mL(n.target)+'</span><span style="left:'+okW+'%">'+mL(OKmax)+'</span><span style="right:0">'+mL(MAX_SCALE)+'</span></div>'+
       '</div>'+
       '<div class="ac-sum">'+
-        '<div class="sv">'+mL(perP)+'<span style="font-size:13px;font-weight:400"> mL/asm.</span></div>'+
-        '<div class="sl">~'+wEq(perP)+'L vyno ekv. · iš viso: '+r2(total)+'L · tikslas: '+r2(n.target*people)+'L</div>'+
+        '<div class="sv">'+mL(perP)+' <span style="font-size:13px;font-weight:normal;">mL/asm.</span></div>'+
+        '<div class="sl">~'+wEq(perP)+'L vyno ekv. &middot; iš viso: '+r2(total)+'L</div>'+
         '<div class="st"><span class="badge '+cls+'">'+status+'</span></div>'+
       '</div>';
 
-    // events
     el.querySelectorAll('.qi').forEach(function(inp){
-      inp.addEventListener('input',function(){
+      inp.addEventListener('change',function(){
         var night=nights[+inp.dataset.nid];
         var item=night.items.filter(function(x){return x.id===+inp.dataset.iid;})[0];
         if(item){item.qty=parseFloat(inp.value)||0;rn(night);}
@@ -959,7 +1003,7 @@
       });
     });
     el.querySelectorAll('.ts').forEach(function(sl){
-      sl.addEventListener('input',function(){
+      sl.addEventListener('change',function(){
         nights[+sl.dataset.nid].target=parseFloat(sl.value);
         rn(nights[+sl.dataset.nid]);
       });
@@ -968,111 +1012,12 @@
 
   function renderAll(){nights.forEach(rn);}
 
-  document.getElementById('acpm').addEventListener('click',function(){if(people>1){people--;document.getElementById('acpv').value=people;renderAll();}});
-  document.getElementById('acpp').addEventListener('click',function(){if(people<40){people++;document.getElementById('acpv').value=people;renderAll();}});
-  document.getElementById('acpv').addEventListener('input',function(){var v=parseInt(this.value);if(!isNaN(v)&&v>0){people=v;renderAll();}});
+  document.getElementById('acpv').addEventListener('change',function(){
+    var v=parseInt(this.value);
+    if(!isNaN(v)&&v>0){people=v;renderAll();}
+  });
 
   renderAll();
-})();
-</script>
-<script>
-(function(){
-  var W=780, H=490;
-  // Debtors (left column) — sorted to minimise line crossings
-  var D=[
-    {name:'Michael',   amt:203.75, y:62},
-    {name:'Lukas',     amt:203.75, y:162},
-    {name:'Dalius',    amt:203.75, y:258},
-    {name:'Adomas G.', amt:203.75, y:355},
-    {name:'Marius',    amt:23.75,  y:445, note:'RC 180€ sumokėta, bet share > paid'},
-  ];
-  // Creditors (right column)
-  var C=[
-    {name:'Rokas',   credit:396.25, y:112, note:'Brazylija · avansu 600€'},
-    {name:'Mykolas', credit:296.25, y:258, note:'Maistas + gėrimai · avansu 500€'},
-    {name:'Šarūnas', credit:146.25, y:415, note:'Dažasvydis · avansu 350€'},
-  ];
-  // Greedy minimum settlement flows (verified)
-  // y1=exit y on debtor, y2=arrival y on creditor (slight offsets for multi-connection nodes)
-  var F=[
-    {di:0,ci:0,a:203.75,y1:62,  y2:102},   // Michael → Rokas
-    {di:1,ci:0,a:192.50,y1:152, y2:122},   // Lukas → Rokas
-    {di:1,ci:1,a:11.25, y1:172, y2:246},   // Lukas → Mykolas
-    {di:2,ci:1,a:203.75,y1:258, y2:258},   // Dalius → Mykolas
-    {di:3,ci:1,a:81.25, y1:345, y2:270},   // Adomas G. → Mykolas
-    {di:3,ci:2,a:122.50,y1:365, y2:405},   // Adomas G. → Šarūnas
-    {di:4,ci:2,a:23.75, y1:445, y2:425},   // Marius → Šarūnas
-  ];
-
-  var NWD=130, NHD=42, LX=65;
-  var NWC=152, NHC=58, RX=715;
-  var FX=NWD, TX=W-NWC-5+2;  // flow end x (just before creditor left edge)
-  var CP1=285, CP2=495;
-  var MINA=11.25, MAXA=203.75;
-
-  function thk(a){return (1.5+(a-MINA)/(MAXA-MINA)*5.5).toFixed(1);}
-  function opa(a){return (0.45+(a/MAXA)*0.55).toFixed(2);}
-
-  var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:'+W+'px;display:block" font-family="Inter,sans-serif">';
-
-  // col headers
-  s+='<text x="'+LX+'" y="22" text-anchor="middle" font-size="9" letter-spacing="0.14em" fill="#aaa" font-weight="700" font-family="JetBrains Mono,monospace">MOKA</text>';
-  s+='<text x="'+RX+'" y="22" text-anchor="middle" font-size="9" letter-spacing="0.14em" fill="#aaa" font-weight="700" font-family="JetBrains Mono,monospace">GAUNA ATGAL</text>';
-  s+='<text x="385" y="22" text-anchor="middle" font-size="9" letter-spacing="0.1em" fill="#ccc" font-weight="400" font-family="JetBrains Mono,monospace">SUMA</text>';
-
-  // FLOW LINES (drawn first, under nodes)
-  F.forEach(function(f){
-    var y1=f.y1, y2=f.y2;
-    var path='M '+FX+','+y1+' C '+CP1+','+y1+' '+CP2+','+y2+' '+TX+','+y2;
-    var t=thk(f.a), op=opa(f.a);
-    s+='<path d="'+path+'" fill="none" stroke="#222" stroke-width="'+t+'" stroke-opacity="'+op+'"/>';
-    // arrowhead at end
-    var ax=TX+3, ay=y2;
-    s+='<polygon points="'+(ax+7)+','+ay+' '+ax+','+(ay-4)+' '+ax+','+(ay+4)+'" fill="#333" fill-opacity="'+op+'"/>';
-    // amount label centred on bezier midpoint
-    var lx=385, ly=(y1+y2)/2;
-    var lbl=Math.round(f.a)+'€';
-    var lw=lbl.length*6.2+14;
-    s+='<rect x="'+(lx-lw/2)+'" y="'+(ly-8.5)+'" width="'+lw.toFixed(0)+'" height="17" rx="3" fill="white" stroke="#d5d5d5" stroke-width="0.8"/>';
-    s+='<text x="'+lx+'" y="'+(ly+4.5)+'" text-anchor="middle" font-size="10" fill="#333" font-family="JetBrains Mono,monospace" font-weight="600">'+lbl+'</text>';
-  });
-
-  // DEBTOR NODES (drawn over lines)
-  D.forEach(function(d){
-    var nx=LX-NWD/2, ny=d.y-NHD/2;
-    s+='<rect x="'+nx+'" y="'+ny+'" width="'+NWD+'" height="'+NHD+'" rx="7" fill="#f6f6f6" stroke="#bbb" stroke-width="1.5"/>';
-    s+='<text x="'+LX+'" y="'+(d.y-4)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="#111">'+d.name+'</text>';
-    s+='<text x="'+LX+'" y="'+(d.y+11)+'" text-anchor="middle" font-size="10" fill="#999" font-family="JetBrains Mono,monospace">moka '+d.amt.toFixed(2)+'€</text>';
-  });
-
-  // CREDITOR NODES (drawn over lines)
-  C.forEach(function(c){
-    var nx=RX-NWC/2, ny=c.y-NHC/2;
-    s+='<rect x="'+nx+'" y="'+ny+'" width="'+NWC+'" height="'+NHC+'" rx="7" fill="#111"/>';
-    s+='<text x="'+RX+'" y="'+(c.y-11)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">'+c.name+'</text>';
-    s+='<text x="'+RX+'" y="'+(c.y+4)+'" text-anchor="middle" font-size="10.5" fill="#ccc" font-family="JetBrains Mono,monospace">+'+c.credit.toFixed(2)+'€</text>';
-    s+='<text x="'+RX+'" y="'+(c.y+19)+'" text-anchor="middle" font-size="9.5" fill="#666">'+c.note+'</text>';
-  });
-
-  // caption
-  s+='<text x="'+(W/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="#ccc" font-family="JetBrains Mono,monospace">7 sandoriai · iš viso 1630€ · lygi dalis 203.75€/asm. · Marius sumokėjo RC 180€, dar lieka 23.75€</text>';
-
-  s+='</svg>';
-
-  var svgEl=document.getElementById('settle-flow');
-  if(svgEl) svgEl.innerHTML=s;
-
-  // Render transaction list
-  var listEl=document.getElementById('settle-list');
-  if(!listEl) return;
-  listEl.innerHTML=F.map(function(f){
-    return '<li class="sf-item">'+
-      '<span class="sf-from">'+D[f.di].name+'</span>'+
-      '<span class="sf-arr">→</span>'+
-      '<span class="sf-to">'+C[f.ci].name+'</span>'+
-      '<span class="sf-amt">'+f.a.toFixed(2)+'€</span>'+
-    '</li>';
-  }).join('');
 })();
 </script>
 </body>
