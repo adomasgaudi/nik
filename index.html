@@ -808,7 +808,7 @@
   <!-- SETTLEMENT FLOW -->
   <section id="apmokejimas">
     <div class="shead"><span class="snum">10</span><h2>Atsiskaitymas</h2><span class="note">greedy min. sandoriai</span></div>
-    <p class="lead">Kairėje — kas moka. Dešinėje — kas gauna atgal (ir už ką jie mokėjo). Linijų storis proporcingas sumai. <b>7 sandoriai</b> — matematiškai mažiausias įmanomas kiekis (tas pats Splitwise algoritmas).</p>
+    <p class="lead">Visi kairėje. Išlaidos dešinėje. <span style="color:#999">Pilkos rodyklės</span> — kiek turėjo mokėti (lygi dalis). <b>Juodos</b> — kiek faktiškai sumokėta. Riestinės — atsiskaitymai tarp žmonių (<b>7 sandoriai</b>).</p>
     <div id="settle-flow"></div>
     <ul class="sf-list" id="settle-list"></ul>
   </section>
@@ -982,100 +982,140 @@
 </script>
 <script>
 (function(){
-  var W=780, H=490;
-  // Debtors (left column) — sorted to minimise line crossings
-  var D=[
-    {name:'Michael',   amt:203.75, y:62},
-    {name:'Lukas',     amt:203.75, y:162},
-    {name:'Dalius',    amt:203.75, y:258},
-    {name:'Adomas G.', amt:203.75, y:355},
-    {name:'Marius',    amt:23.75,  y:445, note:'RC 180€ sumokėta, bet share > paid'},
-  ];
-  // Creditors (right column)
-  var C=[
-    {name:'Rokas',   credit:396.25, y:112, note:'Brazylija · avansu 600€'},
-    {name:'Mykolas', credit:296.25, y:258, note:'Maistas + gėrimai · avansu 500€'},
-    {name:'Šarūnas', credit:146.25, y:415, note:'Dažasvydis · avansu 350€'},
-  ];
-  // Greedy minimum settlement flows (verified)
-  // y1=exit y on debtor, y2=arrival y on creditor (slight offsets for multi-connection nodes)
-  var F=[
-    {di:0,ci:0,a:203.75,y1:62,  y2:102},   // Michael → Rokas
-    {di:1,ci:0,a:192.50,y1:152, y2:122},   // Lukas → Rokas
-    {di:1,ci:1,a:11.25, y1:172, y2:246},   // Lukas → Mykolas
-    {di:2,ci:1,a:203.75,y1:258, y2:258},   // Dalius → Mykolas
-    {di:3,ci:1,a:81.25, y1:345, y2:270},   // Adomas G. → Mykolas
-    {di:3,ci:2,a:122.50,y1:365, y2:405},   // Adomas G. → Šarūnas
-    {di:4,ci:2,a:23.75, y1:445, y2:425},   // Marius → Šarūnas
+  var W=940, H=680;
+
+  // All 8 people (left column) — debtors first, then payers
+  var P=[
+    {name:'Michael',   y:65,  paid:0,   payIdx:-1},
+    {name:'Lukas',     y:145, paid:0,   payIdx:-1},
+    {name:'Dalius',    y:225, paid:0,   payIdx:-1},
+    {name:'Adomas G.', y:305, paid:0,   payIdx:-1},
+    {name:'Marius',    y:385, paid:180, payIdx:3},
+    {name:'Rokas',     y:465, paid:600, payIdx:0},
+    {name:'Mykolas',   y:545, paid:500, payIdx:1},
+    {name:'Šarūnas',   y:625, paid:350, payIdx:2},
   ];
 
-  var NWD=130, NHD=42, LX=65;
-  var NWC=152, NHC=58, RX=715;
-  var FX=NWD, TX=W-NWC-5+2;  // flow end x (just before creditor left edge)
-  var CP1=285, CP2=495;
-  var MINA=11.25, MAXA=203.75;
+  // Expense items (right column)
+  var E=[
+    {name:'Brazylija',         sub:'Rokas · 600€',     total:600, y:100},
+    {name:'Maistas + gėrimai', sub:'Mykolas · 500€',   total:500, y:255},
+    {name:'Dažasvydis',        sub:'Šarūnas · 350€',   total:350, y:410},
+    {name:'RC Racing',         sub:'Marius · 180€',    total:180, y:545},
+  ];
 
-  function thk(a){return (1.5+(a-MINA)/(MAXA-MINA)*5.5).toFixed(1);}
-  function opa(a){return (0.45+(a/MAXA)*0.55).toFixed(2);}
+  // Settlement transactions (greedy min-flow, 7 total)
+  var T=[
+    {from:0, to:5, a:203.75},
+    {from:1, to:5, a:192.50},
+    {from:1, to:6, a:11.25},
+    {from:2, to:6, a:203.75},
+    {from:3, to:6, a:81.25},
+    {from:3, to:7, a:122.50},
+    {from:4, to:7, a:23.75},
+  ];
 
-  var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:'+W+'px;display:block" font-family="Inter,sans-serif">';
+  var NW=152, NH=40, LX=225;
+  var EW=170, EH=52, RX=820;
+  var PR=LX+NW/2;   // right edge of person node
+  var EL=RX-EW/2;   // left edge of expense node
+  var PL=LX-NW/2;   // left edge of person node
+  var SHARE=203.75;
 
-  // col headers
-  s+='<text x="'+LX+'" y="22" text-anchor="middle" font-size="9" letter-spacing="0.14em" fill="#aaa" font-weight="700" font-family="JetBrains Mono,monospace">MOKA</text>';
-  s+='<text x="'+RX+'" y="22" text-anchor="middle" font-size="9" letter-spacing="0.14em" fill="#aaa" font-weight="700" font-family="JetBrains Mono,monospace">GAUNA ATGAL</text>';
-  s+='<text x="385" y="22" text-anchor="middle" font-size="9" letter-spacing="0.1em" fill="#ccc" font-weight="400" font-family="JetBrains Mono,monospace">SUMA</text>';
+  var s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block" font-family="Inter,sans-serif">';
 
-  // FLOW LINES (drawn first, under nodes)
-  F.forEach(function(f){
-    var y1=f.y1, y2=f.y2;
-    var path='M '+FX+','+y1+' C '+CP1+','+y1+' '+CP2+','+y2+' '+TX+','+y2;
-    var t=thk(f.a), op=opa(f.a);
-    s+='<path d="'+path+'" fill="none" stroke="#222" stroke-width="'+t+'" stroke-opacity="'+op+'"/>';
-    // arrowhead at end
-    var ax=TX+3, ay=y2;
-    s+='<polygon points="'+(ax+7)+','+ay+' '+ax+','+(ay-4)+' '+ax+','+(ay+4)+'" fill="#333" fill-opacity="'+op+'"/>';
-    // amount label centred on bezier midpoint
-    var lx=385, ly=(y1+y2)/2;
-    var lbl=Math.round(f.a)+'€';
-    var lw=lbl.length*6.2+14;
-    s+='<rect x="'+(lx-lw/2)+'" y="'+(ly-8.5)+'" width="'+lw.toFixed(0)+'" height="17" rx="3" fill="white" stroke="#d5d5d5" stroke-width="0.8"/>';
-    s+='<text x="'+lx+'" y="'+(ly+4.5)+'" text-anchor="middle" font-size="10" fill="#333" font-family="JetBrains Mono,monospace" font-weight="600">'+lbl+'</text>';
+  // Headers
+  s+='<text x="'+LX+'" y="24" text-anchor="middle" font-size="9" letter-spacing=".14em" fill="#aaa" font-weight="700" font-family="JetBrains Mono,monospace">ŽMONĖS</text>';
+  s+='<text x="'+RX+'" y="24" text-anchor="middle" font-size="9" letter-spacing=".14em" fill="#aaa" font-weight="700" font-family="JetBrains Mono,monospace">IŠLAIDOS</text>';
+
+  // GRAY ARROWS: each person → each expense (their equal share of that expense)
+  P.forEach(function(p){
+    E.forEach(function(e){
+      var shareOfExp=(e.total/8).toFixed(2);
+      var cx1=PR+90, cx2=EL-90;
+      s+='<path d="M'+PR+','+p.y+' C'+cx1+','+p.y+' '+cx2+','+e.y+' '+EL+','+e.y+'" fill="none" stroke="#bbb" stroke-width="0.9" stroke-opacity="0.35"/>';
+    });
   });
 
-  // DEBTOR NODES (drawn over lines)
-  D.forEach(function(d){
-    var nx=LX-NWD/2, ny=d.y-NHD/2;
-    s+='<rect x="'+nx+'" y="'+ny+'" width="'+NWD+'" height="'+NHD+'" rx="7" fill="#f6f6f6" stroke="#bbb" stroke-width="1.5"/>';
-    s+='<text x="'+LX+'" y="'+(d.y-4)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="#111">'+d.name+'</text>';
-    s+='<text x="'+LX+'" y="'+(d.y+11)+'" text-anchor="middle" font-size="10" fill="#999" font-family="JetBrains Mono,monospace">moka '+d.amt.toFixed(2)+'€</text>';
+  // BLACK ARROWS: payers → their expense (what they actually paid)
+  P.forEach(function(p){
+    if(p.payIdx<0) return;
+    var e=E[p.payIdx];
+    var cx1=PR+80, cx2=EL-80;
+    var dy=e.y-p.y;
+    // thickness proportional to amount
+    var thk=(2+(p.paid/600)*5).toFixed(1);
+    s+='<path d="M'+PR+','+p.y+' C'+cx1+','+p.y+' '+cx2+','+e.y+' '+EL+','+e.y+'" fill="none" stroke="#111" stroke-width="'+thk+'"/>';
+    // arrowhead
+    s+='<polygon points="'+EL+','+e.y+' '+(EL-9)+','+(e.y-4)+' '+(EL-9)+','+(e.y+4)+'" fill="#111"/>';
+    // amount label at midpoint
+    var mx=(PR+EL)/2, my=(p.y+e.y)/2;
+    var lbl=p.paid+'€';
+    var lw=lbl.length*6.5+14;
+    s+='<rect x="'+(mx-lw/2)+'" y="'+(my-9)+'" width="'+lw+'" height="18" rx="3" fill="white" stroke="#ccc" stroke-width="0.8"/>';
+    s+='<text x="'+mx+'" y="'+(my+5)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#111" font-family="JetBrains Mono,monospace">'+lbl+'</text>';
   });
 
-  // CREDITOR NODES (drawn over lines)
-  C.forEach(function(c){
-    var nx=RX-NWC/2, ny=c.y-NHC/2;
-    s+='<rect x="'+nx+'" y="'+ny+'" width="'+NWC+'" height="'+NHC+'" rx="7" fill="#111"/>';
-    s+='<text x="'+RX+'" y="'+(c.y-11)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="white">'+c.name+'</text>';
-    s+='<text x="'+RX+'" y="'+(c.y+4)+'" text-anchor="middle" font-size="10.5" fill="#ccc" font-family="JetBrains Mono,monospace">+'+c.credit.toFixed(2)+'€</text>';
-    s+='<text x="'+RX+'" y="'+(c.y+19)+'" text-anchor="middle" font-size="9.5" fill="#666">'+c.note+'</text>';
+  // SETTLEMENT CURVED ARROWS (curl left between people)
+  var TMAX=203.75, TMIN=11.25;
+  T.forEach(function(t){
+    var fp=P[t.from], tp=P[t.to];
+    var span=Math.abs(tp.y-fp.y);
+    var bulge=Math.min(40+span*0.18, 115);
+    var cx=PL-bulge;
+    var path='M'+PL+','+fp.y+' C'+cx+','+fp.y+' '+cx+','+tp.y+' '+PL+','+tp.y;
+    var thk=(1.5+(t.a-TMIN)/(TMAX-TMIN)*5).toFixed(1);
+    var op=(0.45+(t.a/TMAX)*0.55).toFixed(2);
+    s+='<path d="'+path+'" fill="none" stroke="#111" stroke-width="'+thk+'" stroke-opacity="'+op+'"/>';
+    // arrowhead (pointing right onto dest node)
+    s+='<polygon points="'+PL+','+tp.y+' '+(PL-7)+','+(tp.y-4)+' '+(PL-7)+','+(tp.y+4)+'" fill="#111" fill-opacity="'+op+'"/>';
+    // amount label at curve midpoint
+    var lx=cx-22, ly=(fp.y+tp.y)/2;
+    s+='<text x="'+lx+'" y="'+(ly+4)+'" text-anchor="middle" font-size="9" fill="#555" font-family="JetBrains Mono,monospace">'+t.a.toFixed(2)+'€</text>';
   });
 
-  // caption
-  s+='<text x="'+(W/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9" fill="#ccc" font-family="JetBrains Mono,monospace">7 sandoriai · iš viso 1630€ · lygi dalis 203.75€/asm. · Marius sumokėjo RC 180€, dar lieka 23.75€</text>';
+  // EXPENSE NODES (drawn over gray arrows)
+  E.forEach(function(e){
+    var nx=RX-EW/2, ny=e.y-EH/2;
+    s+='<rect x="'+nx+'" y="'+ny+'" width="'+EW+'" height="'+EH+'" rx="7" fill="#111"/>';
+    s+='<text x="'+RX+'" y="'+(e.y-7)+'" text-anchor="middle" font-size="12" font-weight="700" fill="white">'+e.name+'</text>';
+    s+='<text x="'+RX+'" y="'+(e.y+9)+'" text-anchor="middle" font-size="10" fill="#aaa" font-family="JetBrains Mono,monospace">'+e.total+'€</text>';
+    s+='<text x="'+RX+'" y="'+(e.y+23)+'" text-anchor="middle" font-size="9" fill="#666">'+e.sub+'</text>';
+  });
+
+  // PERSON NODES (drawn over everything)
+  P.forEach(function(p){
+    var nx=LX-NW/2, ny=p.y-NH/2;
+    var isPayer=p.payIdx>=0;
+    s+='<rect x="'+nx+'" y="'+ny+'" width="'+NW+'" height="'+NH+'" rx="6" fill="'+(isPayer?'#111':'#f4f4f4')+'" stroke="'+(isPayer?'none':'#bbb')+'" stroke-width="1.5"/>';
+    s+='<text x="'+LX+'" y="'+(p.y-4)+'" text-anchor="middle" font-size="12.5" font-weight="700" fill="'+(isPayer?'#fff':'#111')+'">'+p.name+'</text>';
+    var sub=isPayer?('mokėjo '+p.paid+'€'):('lygi dalis '+SHARE.toFixed(2)+'€');
+    s+='<text x="'+LX+'" y="'+(p.y+11)+'" text-anchor="middle" font-size="9.5" fill="'+(isPayer?'#888':'#aaa')+'" font-family="JetBrains Mono,monospace">'+sub+'</text>';
+  });
+
+  // Legend
+  var ly=H-16;
+  s+='<line x1="30" y1="'+ly+'" x2="55" y2="'+ly+'" stroke="#bbb" stroke-width="1.5" stroke-opacity="0.5"/>';
+  s+='<text x="60" y="'+(ly+4)+'" font-size="9" fill="#aaa" font-family="JetBrains Mono,monospace">turėjo mokėti (lygi dalis)</text>';
+  s+='<line x1="260" y1="'+ly+'" x2="285" y2="'+ly+'" stroke="#111" stroke-width="3"/>';
+  s+='<text x="290" y="'+(ly+4)+'" font-size="9" fill="#555" font-family="JetBrains Mono,monospace">faktiškai sumokėta</text>';
+  s+='<line x1="470" y1="'+ly+'" x2="495" y2="'+ly+'" stroke="#111" stroke-width="2" stroke-opacity="0.6"/>';
+  s+='<text x="500" y="'+(ly+4)+'" font-size="9" fill="#555" font-family="JetBrains Mono,monospace">atsiskaitymas (7 sandoriai)</text>';
 
   s+='</svg>';
 
   var svgEl=document.getElementById('settle-flow');
   if(svgEl) svgEl.innerHTML=s;
 
-  // Render transaction list
+  // Transaction list
   var listEl=document.getElementById('settle-list');
   if(!listEl) return;
-  listEl.innerHTML=F.map(function(f){
+  listEl.innerHTML=T.map(function(t){
     return '<li class="sf-item">'+
-      '<span class="sf-from">'+D[f.di].name+'</span>'+
+      '<span class="sf-from">'+P[t.from].name+'</span>'+
       '<span class="sf-arr">→</span>'+
-      '<span class="sf-to">'+C[f.ci].name+'</span>'+
-      '<span class="sf-amt">'+f.a.toFixed(2)+'€</span>'+
+      '<span class="sf-to">'+P[t.to].name+'</span>'+
+      '<span class="sf-amt">'+t.a.toFixed(2)+'€</span>'+
     '</li>';
   }).join('');
 })();
