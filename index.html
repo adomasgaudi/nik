@@ -275,14 +275,22 @@
   .pd-total-panel .pd-axis-lbl{color:#666}
 
   /* settlement flow */
-  .sf-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 28px;border:1px solid var(--line);border-radius:8px;overflow:hidden;padding:2px 16px;margin-top:18px}
+  .sf-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
   @media(max-width:600px){.sf-list{grid-template-columns:1fr}}
-  .sf-item{display:flex;align-items:baseline;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
-  .sf-item:first-child,.sf-item:nth-child(2){border-top:none}
-  .sf-from{font-weight:600;min-width:74px;font-size:13px}
+  .sf-person{border:1px solid var(--line);border-radius:8px;padding:10px 14px 8px}
+  .sf-phead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding-bottom:7px;margin-bottom:4px;border-bottom:1px solid var(--line)}
+  .sf-name{font-weight:800;font-size:14.5px}
+  .sf-net{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700}
+  .sf-net.sf-neg{color:var(--ink-2)}
+  .sf-net.sf-pos{color:#1a7f37}
+  .sf-row{display:flex;align-items:baseline;gap:8px;padding:4px 0;font-size:13px}
   .sf-arr{color:var(--ink-3);font-family:'JetBrains Mono',monospace;font-size:12px;flex:none}
-  .sf-to{font-weight:800;flex:1}
-  .sf-amt{font-family:'JetBrains Mono',monospace;font-weight:700;margin-left:auto;color:var(--ink-2)}
+  .sf-to{font-weight:700;flex:none;min-width:68px}
+  .sf-exp{color:var(--ink-3);font-size:11.5px;flex:1}
+  .sf-amt{font-family:'JetBrains Mono',monospace;font-weight:700;margin-left:auto;color:var(--ink-2);flex:none}
+  .sf-get{margin-top:3px;padding-top:6px;border-top:1px dashed var(--line)}
+  .sf-get .sf-amt{color:#1a7f37}
+  .sf-get .sf-to,.sf-get .sf-exp{color:var(--ink-2)}
 
   footer{margin-top:64px;padding-top:18px;border-top:2px solid var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 
@@ -290,7 +298,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;top:6px;left:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#ccc;z-index:9999;pointer-events:none;letter-spacing:.05em">v.9</div>
+<div style="position:fixed;top:6px;left:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#ccc;z-index:9999;pointer-events:none;letter-spacing:.05em">v.10</div>
 <div class="wrap">
 
   <!-- MASTHEAD -->
@@ -782,10 +790,10 @@
 
   <!-- SETTLEMENT FLOW -->
   <section id="apmokejimas">
-    <div class="shead"><span class="snum">10</span><h2>Atsiskaitymas</h2><span class="note">greedy min. sandoriai</span></div>
-    <p class="lead">Visi kairėje. Išlaidos dešinėje. <span style="color:#999">Pilkos rodyklės</span> — kiek turėjo mokėti (lygi dalis). <b>Juodos</b> — kiek faktiškai sumokėta. Riestinės — atsiskaitymai tarp žmonių (<b>7 sandoriai</b>).</p>
+    <div class="shead"><span class="snum">10</span><h2>Atsiskaitymas</h2><span class="note">kas kam ir už ką</span></div>
+    <p class="lead">Visi kairėje. Išlaidos dešinėje. <span style="color:#999">Pilkos rodyklės</span> — kiekvieno lygi dalis (⅛ kiekvienos išlaidos). <b>Juodos</b> — kiek kas faktiškai sumokėjo. Žemiau — tikslus atsiskaitymas: kiekvienas grąžina savo dalį už <b>kiekvieną pramogą</b> tam, kas ją apmokėjo.</p>
     <div id="settle-flow"></div>
-    <ul class="sf-list" id="settle-list"></ul>
+    <div class="sf-list" id="settle-list"></div>
   </section>
 
   <footer>
@@ -979,17 +987,6 @@
     {name:'RC Racing',         sub:'Marius · 180€',    total:180, y:545},
   ];
 
-  // Settlement transactions (greedy min-flow, 7 total)
-  var T=[
-    {from:0, to:5, a:203.75},
-    {from:1, to:5, a:192.50},
-    {from:1, to:6, a:11.25},
-    {from:2, to:6, a:203.75},
-    {from:3, to:6, a:81.25},
-    {from:3, to:7, a:122.50},
-    {from:4, to:7, a:23.75},
-  ];
-
   var NW=152, NH=40, LX=225;
   var EW=170, EH=52, RX=820;
   var PR=LX+NW/2;   // right edge of person node
@@ -1031,24 +1028,6 @@
     s+='<text x="'+mx+'" y="'+(my+5)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#111" font-family="JetBrains Mono,monospace">'+lbl+'</text>';
   });
 
-  // SETTLEMENT CURVED ARROWS (curl left between people)
-  var TMAX=203.75, TMIN=11.25;
-  T.forEach(function(t){
-    var fp=P[t.from], tp=P[t.to];
-    var span=Math.abs(tp.y-fp.y);
-    var bulge=Math.min(40+span*0.18, 115);
-    var cx=PL-bulge;
-    var path='M'+PL+','+fp.y+' C'+cx+','+fp.y+' '+cx+','+tp.y+' '+PL+','+tp.y;
-    var thk=(1.5+(t.a-TMIN)/(TMAX-TMIN)*5).toFixed(1);
-    var op=(0.45+(t.a/TMAX)*0.55).toFixed(2);
-    s+='<path d="'+path+'" fill="none" stroke="#111" stroke-width="'+thk+'" stroke-opacity="'+op+'"/>';
-    // arrowhead (pointing right onto dest node)
-    s+='<polygon points="'+PL+','+tp.y+' '+(PL-7)+','+(tp.y-4)+' '+(PL-7)+','+(tp.y+4)+'" fill="#111" fill-opacity="'+op+'"/>';
-    // amount label at curve midpoint
-    var lx=cx-22, ly=(fp.y+tp.y)/2;
-    s+='<text x="'+lx+'" y="'+(ly+4)+'" text-anchor="middle" font-size="9" fill="#555" font-family="JetBrains Mono,monospace">'+t.a.toFixed(2)+'€</text>';
-  });
-
   // EXPENSE NODES (drawn over gray arrows)
   E.forEach(function(e){
     var nx=RX-EW/2, ny=e.y-EH/2;
@@ -1074,24 +1053,57 @@
   s+='<text x="60" y="'+(ly+4)+'" font-size="9" fill="#aaa" font-family="JetBrains Mono,monospace">turėjo mokėti (lygi dalis)</text>';
   s+='<line x1="260" y1="'+ly+'" x2="285" y2="'+ly+'" stroke="#111" stroke-width="3"/>';
   s+='<text x="290" y="'+(ly+4)+'" font-size="9" fill="#555" font-family="JetBrains Mono,monospace">faktiškai sumokėta</text>';
-  s+='<line x1="470" y1="'+ly+'" x2="495" y2="'+ly+'" stroke="#111" stroke-width="2" stroke-opacity="0.6"/>';
-  s+='<text x="500" y="'+(ly+4)+'" font-size="9" fill="#555" font-family="JetBrains Mono,monospace">atsiskaitymas (7 sandoriai)</text>';
 
   s+='</svg>';
 
   var svgEl=document.getElementById('settle-flow');
   if(svgEl) svgEl.innerHTML=s;
 
-  // Transaction list
+  // Per-expense settlement list: each person repays their 1/8 share of every
+  // expense they did NOT front, paid to whoever fronted it. Whoever fronted an
+  // expense is reimbursed by the other 7 shares.
   var listEl=document.getElementById('settle-list');
   if(!listEl) return;
-  listEl.innerHTML=T.map(function(t){
-    return '<li class="sf-item">'+
-      '<span class="sf-from">'+P[t.from].name+'</span>'+
-      '<span class="sf-arr">→</span>'+
-      '<span class="sf-to">'+P[t.to].name+'</span>'+
-      '<span class="sf-amt">'+t.a.toFixed(2)+'€</span>'+
-    '</li>';
+
+  // expense index -> fronter person index
+  var fronter=E.map(function(e,ei){
+    for(var i=0;i<P.length;i++){ if(P[i].payIdx===ei) return i; }
+    return -1;
+  });
+
+  listEl.innerHTML=P.map(function(p){
+    var out=0, rows='';
+    E.forEach(function(e,ei){
+      if(p.payIdx===ei) return;            // fronted this one — nothing owed
+      var share=e.total/8;
+      out+=share;
+      rows+='<div class="sf-row">'+
+        '<span class="sf-arr">→</span>'+
+        '<span class="sf-to">'+P[fronter[ei]].name+'</span>'+
+        '<span class="sf-exp">'+e.name+'</span>'+
+        '<span class="sf-amt">'+share.toFixed(2)+'€</span>'+
+      '</div>';
+    });
+    var badge, cls;
+    if(p.payIdx>=0){
+      var reimburse=E[p.payIdx].total*7/8;   // collected from the other 7
+      var net=reimburse-out;
+      if(net>=0){ badge='atgauna '+net.toFixed(2)+'€'; cls='sf-pos'; }
+      else { badge='moka '+(-net).toFixed(2)+'€'; cls='sf-neg'; }
+      rows+='<div class="sf-row sf-get">'+
+        '<span class="sf-arr">←</span>'+
+        '<span class="sf-to">visi ×7</span>'+
+        '<span class="sf-exp">'+E[p.payIdx].name+' · grąžina dalį</span>'+
+        '<span class="sf-amt">+'+reimburse.toFixed(2)+'€</span>'+
+      '</div>';
+    } else {
+      badge='moka '+out.toFixed(2)+'€'; cls='sf-neg';
+    }
+    return '<div class="sf-person">'+
+      '<div class="sf-phead"><span class="sf-name">'+p.name+'</span>'+
+      '<span class="sf-net '+cls+'">'+badge+'</span></div>'+
+      rows+
+    '</div>';
   }).join('');
 })();
 </script>
